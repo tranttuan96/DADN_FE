@@ -1,0 +1,65 @@
+.tableInfo{
+    position: absolute;
+    left: 50px;
+    top: 50vh;
+    transform: translateY(-50%);
+    width: 400px;
+    height: 500px;
+    background: white;
+    padding: 60px 40px;
+}
+
+.intensity{
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(10%, -50%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.intensityinput{
+    margin-left: 50px;
+    margin-right: 10px;
+}
+
+.toggle{
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translate(20%, -50%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.togglebutton{
+    margin-left: 20px;
+}
+
+.manual{
+    border-style: groove;
+    width: 500px;
+    height: 200px;
+}
+
+.onbutton{
+    position: fixed;
+    top: 40%;
+    right: 50%;
+    margin-left: 50px;
+    margin-right: 50px;
+    font-size: 24px;
+    background-color: SeaGreen;
+    padding: 16px 24px;
+}
+
+.offbutton{
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    margin-left: 50px;
+    margin-right: 50px;
+    font-size: 24px;
+    background-color: crimson;
+    padding: 16px 24px;    
+}
