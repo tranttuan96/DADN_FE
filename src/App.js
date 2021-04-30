@@ -11,7 +11,7 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        
+      
         <AuthTemplate exact path='/login' component={Login} />
         <UserTemplate exact path='/doam' component={DoAm} />
         <UserTemplate exact path='/maybom' component={MayBom} />
