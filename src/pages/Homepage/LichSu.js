@@ -5,5 +5,6 @@ export default function LichSu(props) {
         <div>
             Trang Lịch sử hoạt động
         </div>
+        
     )
 }
