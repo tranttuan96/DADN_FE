@@ -1,0 +1,53 @@
+.wrapper
+{
+	text-align: center;
+}
+
+.choose-information
+{
+	margin: 20px 60px;
+}
+
+.option
+{
+	margin: 20px 0;
+}
+
+.MQTT
+{
+	width: 50%;
+}
+
+.wrapper-flex
+{
+	display: flex;
+  	flex-flow: row wrap;
+}
+
+.Apply-Button
+{
+	width: 200px;
+	height: 50px;
+	margin: 25px 25px;
+	background-color: green;
+	font-size: 1.5rem;
+}
+
+.Cancle-Button
+{
+	width: 200px;
+	height: 50px;
+	margin: 25px 25px;
+	background-color: red;
+	font-size: 1.5rem;
+}
+
+.choose-date
+{
+	font-size: 1rem;
+}
+
+.paper-wrapper
+{
+	padding: 20px 0px;
+}
