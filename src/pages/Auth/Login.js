@@ -5,10 +5,16 @@ import '../../assets/scss/Layout/login.scss'
 
 export default function Login(props) {
 
-    let tempAccount = {
+
+    let accounts = [{
         taiKhoan: "user",
-        matKhau: "user123"
-    }
+        matKhau: "user123",
+        loaiNguoiDung: "user"
+    }, {
+        taiKhoan: "admin",
+        matKhau: "admin123",
+        loaiNguoiDung: "admin"
+    }]
 
     let [state, setState] = useState({
         values: {
@@ -29,10 +35,17 @@ export default function Login(props) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(state.values.taiKhoan === tempAccount.taiKhoan && state.values.matKhau == tempAccount.matKhau) {
+        let index = accounts.findIndex(account => state.values.taiKhoan === account.taiKhoan && state.values.matKhau == account.matKhau)
+        if(index != -1) {
             localStorage.setItem(userLogin, JSON.stringify(state.values.taiKhoan))
             alert("login success");
-            props.history.push('/')
+            if(accounts[index].loaiNguoiDung == "user") {
+                props.history.push('/')
+            }
+            else {
+                props.history.push('/admin')
+            }
+            
         }
         else {
             alert("wrong info");
