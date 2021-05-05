@@ -1,14 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../../assets/scss/Layout/homepage.scss"
+import { qlDoAmService } from "../../services/quanLyDoAmService"
 
 export default function Homepage() {
     let farms = [{ name: 'farm1' }, { name: 'farm2' }, { name: 'farm3' }]
 
+    let [humidity, setHumidity] = useState();
     let [farm, setFarm] = useState("");
 
     let parameter = {time: "11:00AM 04/05/2021", humidity : "700", engine : {status: "OFF", intensity: "1"}}
 
     let [firstAccess, setFirstAccess] = useState(true);
+
+    useEffect(() => {
+        qlDoAmService.layThongSoDoAm().then(res => {
+            console.log(res.data);
+        }).catch(error => {
+            console.log(error.response.data);
+        });
+    }, []);
 
     const handleChangeSelectFarm = (event) => {
         let { value } = event.target;
@@ -23,10 +33,10 @@ export default function Homepage() {
         if (firstAccess) {
             return <div className="popupFarms">
                 <h4>Vui lòng chọn nông trại: </h4>
-                <select class="form-select" name="farm" aria-label="Default select" onChange={handleChangeSelectFarm}>
+                <select className="form-select" name="farm" aria-label="Default select" onChange={handleChangeSelectFarm}>
                     <option defaultValue hidden>Lựa chọn nông trại</option>
                     {farms.map((farm, i) => {
-                        return <option value={farms[i].name}>{farms[i].name}</option>
+                        return <option key={i} value={farms[i].name}>{farms[i].name}</option>
                     })}
                 </select>
 
@@ -40,10 +50,10 @@ export default function Homepage() {
             return <div className="showContent">
                 <div className="chose__farm">
                     <p>Thay đổi nông trại: </p>
-                    <select class="form-select" name="farm" aria-label="Default select" onChange={handleChangeSelectFarm}>
+                    <select className="form-select" name="farm" aria-label="Default select" onChange={handleChangeSelectFarm}>
                         <option value={farm} defaultValue hidden>{farm}</option>
                         {farms.map((farm, i) => {
-                            return <option value={farms[i].name}>{farms[i].name}</option>
+                            return <option key={i} value={farms[i].name}>{farms[i].name}</option>
                         })}
                     </select>
                 </div>
