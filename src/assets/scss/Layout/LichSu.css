@@ -1,45 +1,34 @@
 .wrapper
 {
 	text-align: center;
+	align-items: center
 }
 
 .choose-information
 {
-	margin: 20px 60px;
+	margin: 30px 60px;
 }
 
-.option
-{
-	margin: 20px 0;
-}
 
 .MQTT
 {
-	width: 50%;
-}
-
-.wrapper-flex
-{
-	display: flex;
-  	flex-flow: row wrap;
+	width: 100%;
 }
 
 .Apply-Button
 {
 	width: 200px;
-	height: 50px;
-	margin: 25px 25px;
-	background-color: green;
-	font-size: 1.5rem;
+	height: 50px !important;
+	margin: 25px 25px !important;
+	font-size: 1.5rem !important;
 }
 
 .Cancle-Button
 {
 	width: 200px;
-	height: 50px;
-	margin: 25px 25px;
-	background-color: red;
-	font-size: 1.5rem;
+	height: 50px !important;
+	margin: 25px 25px !important;
+	font-size: 1.5rem !important;
 }
 
 .choose-date
@@ -47,7 +36,8 @@
 	font-size: 1rem;
 }
 
-.paper-wrapper
+.table_history
 {
-	padding: 20px 0px;
+	width: 80%;
+	margin: 0 auto;
 }
