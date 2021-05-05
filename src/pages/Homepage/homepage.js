@@ -1,9 +1,7 @@
-import React, { useState } from 'react'
-import '../../assets/scss/Layout/homepage.scss'
-
+import React, {useState} from 'react'
+import "../../assets/scss/Layout/homepage.scss"
 
 export default function Homepage() {
-
     let farms = [{ name: 'farm1' }, { name: 'farm2' }, { name: 'farm3' }]
 
     let [farm, setFarm] = useState("");
@@ -13,9 +11,7 @@ export default function Homepage() {
     const renderContent = () => {
         if (firstAccess) {
             return <div className="popupFarms">
-                <Dropdown.Button onClick={handleButtonClick()} overlay={menu}>
-                    Dropdown
-                </Dropdown.Button>
+                
             </div>
         }
         else {
