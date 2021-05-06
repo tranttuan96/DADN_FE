@@ -12,6 +12,8 @@ export default function Homepage() {
 
     let [firstAccess, setFirstAccess] = useState(true);
 
+    let test = "";
+
     useEffect(() => {
         qlDoAmService.layThongSoDoAm().then(res => {
             console.log(res.data);
