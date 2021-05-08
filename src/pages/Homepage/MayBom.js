@@ -2,14 +2,19 @@ import { render } from '@testing-library/react';
 import React,{useState} from 'react'
 import '../../assets/scss/Layout/maybom.css'
 import {Switch} from "antd"
+import {Modal,Button} from "react-bootstrap"
 
 export default function MayBom() {
-    let[intensity,setIntensity]=useState(null);
+    let[intensity,setIntensity]=useState(100);
     let[toggle,setToggle]=useState(false);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     var info = [
         {label: "Trạng thái", value: "Tắt"},
-        {label: "Cường độ", value: {intensity}},
+        {label: "Cường độ", value: "100"},
         {label: "Ngưỡng trên", value: "900"},
         {label: "Ngưỡng dưới", value: "100"},
         {label: "Độ ẩm", value: "512"},
@@ -53,7 +58,7 @@ export default function MayBom() {
                         <td>Trạng thái</td><td>Tắt</td>
                     </tr>
                     <tr>
-                        <td>Cường độ</td><td>100</td>
+                        <td>Cường độ</td><td>{intensity}</td>
                     </tr>
                     <tr>
                         <td>Ngưỡng trên</td><td>900</td>
@@ -87,6 +92,34 @@ export default function MayBom() {
                     )
                 }
             </div>
+
+            <Button className="threshold" variant="primary" onClick={handleShow}>
+                Thiết lập ngưỡng độ ẩm
+            </Button>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header>
+                <Modal.Title>Thiết lập ngưỡng độ ẩm</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <form className="thresholdform">
+                <div>
+                    <label className="upperlabel">Ngưỡng trên:</label>
+                    <input name="intent" type="text" onChange={getIntensity} className="upperinput"/> <br/>
+                    <label className="lowerlabel">Ngưỡng dưới:</label>
+                    <input name="intent" type="text" onChange={getIntensity} className="lowerinput"/> <br/>
+                </div>
+                </form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={saveIntensity}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
 
         </div>
     )
