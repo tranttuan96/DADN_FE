@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 import React,{useState} from 'react'
 import '../../assets/scss/Layout/maybom.css'
+import {Switch} from "antd"
 
 export default function MayBom() {
     let[intensity,setIntensity]=useState(null);
@@ -34,7 +35,7 @@ export default function MayBom() {
         alert("intensity change");
     }
 
-    const manualControl = () =>{
+    const toggler = () =>{
         toggle ? setToggle(false) : setToggle(true);
         render();
     }
@@ -44,7 +45,7 @@ export default function MayBom() {
             <table className="tableInfo">
                 <thead>
                     <tr>
-                    <th colSpan="2">Thông tin máy bơm</th>
+                    <th colSpan="2" className="tableheader">Thông tin máy bơm</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,15 +69,15 @@ export default function MayBom() {
 
             <form className="intensity" onSubmit={saveIntensity}>
                 <div>
-                    <label>Cường độ</label>
+                    <label className="intensitylabel">Cường độ:</label>
                     <input name="intent" type="text" onChange={getIntensity} className="intensityinput"/>
-                    <button>SAVE</button>
+                    <button className="intensitybutton">SAVE</button>
                 </div>
             </form>
 
             <div className="toggle">
-                <label>Điều khiển máy bơm thủ công</label>
-                <button onClick={manualControl} className="togglebutton">{toggle? "Tắt" : "Bật"}</button>
+                <label className="togglelabel">Điều khiển máy bơm thủ công</label>
+                <Switch className="togglebutton" onClick={toggler}/>
                 {
                     toggle && (
                         <div className="manual" >
