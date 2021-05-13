@@ -18,7 +18,9 @@ class DoAm extends Component {
         isAdvancedViews: false,
         isDay: false,
         isMonth: false,
-        isYear: false
+        isYear: false,
+        viewBar: false,
+        viewLine: true
       };
     }
    
@@ -51,7 +53,18 @@ class DoAm extends Component {
         isAdvancedViews: false
       });
     }
-
+    viewLine = ()=>{
+      this.setState({
+        viewLine: true,
+        viewBar: false
+      });
+    }
+    viewBar = ()=>{
+      this.setState({
+        viewLine: false,
+        viewBar: true
+      });
+    }
     data_normal = [43, 42, 42.5, 41, 41, 40.5];
     data_day = [42, 43, 42, 44, 45, 47];
     data_month = [44, 45, 43, 42, 41, 42];
@@ -61,10 +74,11 @@ class DoAm extends Component {
     labels_month= ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'];
     labels_year= ['2015', '2016', '2017', '2018', '2019', '2020'];
     render(){
-      var {isAdvancedViews, isDay, isMonth, isYear} = this.state;
+      var {isAdvancedViews, isDay, isMonth, isYear, viewBar, viewLine} = this.state;
       var formSet = isAdvancedViews? '':<SetThresholdForm />;
       var datas = isDay? this.data_day : (isMonth? this.data_month: (isYear? this.data_year: this.data_normal));
       var labels = isDay? this.labels_day : (isMonth? this.labels_month: (isYear? this.labels_year: this.labels_normal));
+      var viewType = viewLine? true : false;
       return ( 
         //  <Show_graph />
         <div >
@@ -94,7 +108,16 @@ class DoAm extends Component {
               </left>
               : ''
               } 
-              <Show_graph data={datas} label={labels}  />
+              <Show_graph data={datas} label={labels} viewtypee={viewLine}  />
+              <center>
+                <Button variant="contained" color="primary" onClick={ this.viewBar }>
+                  Biểu đồ cột
+                </Button>
+                <Button variant="contained" color="primary" onClick={ this.viewLine }>
+                  Biểu đồ đường
+                </Button>
+              </center>
+              
             </Grid>
             
             {formSet}
