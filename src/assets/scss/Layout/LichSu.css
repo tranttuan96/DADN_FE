@@ -1,0 +1,43 @@
+.wrapper
+{
+	text-align: center;
+	align-items: center
+}
+
+.choose-information
+{
+	margin: 30px 60px;
+}
+
+
+.MQTT
+{
+	width: 100%;
+}
+
+.Apply-Button
+{
+	width: 200px;
+	height: 50px !important;
+	margin: 25px 25px !important;
+	font-size: 1.5rem !important;
+}
+
+.Cancle-Button
+{
+	width: 200px;
+	height: 50px !important;
+	margin: 25px 25px !important;
+	font-size: 1.5rem !important;
+}
+
+.choose-date
+{
+	font-size: 1rem;
+}
+
+.table_history
+{
+	width: 80%;
+	margin: 0 auto;
+}

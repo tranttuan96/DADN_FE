@@ -1,5 +1,5 @@
 .tableInfo{
-    position: absolute;
+    position: fixed;
     left: 50px;
     top: 50vh;
     transform: translateY(-50%);
@@ -18,22 +18,58 @@
     margin-right: auto;
 }
 
+.intensitylabel{
+    font-size: larger;
+}
+
 .intensityinput{
+    width: 200px;
     margin-left: 50px;
-    margin-right: 10px;
+    margin-right: 30px;
+    padding: 0.5em 1em;
+    border: none;
+    border-bottom: 2px solid rgb(0, 0, 0);
+}
+
+.intensitybutton {
+    width: fit-content;
+    padding: 0.5em 1em;
+    text-align: center;
+    float: inherit;
+    margin: 0em auto;
+    color: #000000;
+    background: #00000026;
+    border-radius:5px;
+}
+
+.intensitybutton:hover {
+    background: #0f0f0f !important;
+    color: white !important;
+    border-radius:5px;
 }
 
 .toggle{
     position: fixed;
-    top: 60%;
-    left: 50%;
+    top: 70%;
+    left: 45%;
     transform: translate(20%, -50%);
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+    height: 300px;
+}
+
+.togglebutton{
     margin-left: auto;
     margin-right: auto;
 }
 
-.togglebutton{
-    margin-left: 20px;
+.togglelabel{
+    font-weight: bold;
+    font-size: larger;
+    color: crimson;
+    margin-left: 20%;
+    margin-right: 20px;
 }
 
 .manual{
@@ -44,22 +80,39 @@
 
 .onbutton{
     position: fixed;
-    top: 40%;
+    top: 30%;
     right: 50%;
     margin-left: 50px;
     margin-right: 50px;
     font-size: 24px;
     background-color: SeaGreen;
     padding: 16px 24px;
+    border-radius: 12px;
+}
+
+.onbutton:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
 .offbutton{
     position: fixed;
-    top: 40%;
+    top: 30%;
     left: 50%;
     margin-left: 50px;
     margin-right: 50px;
     font-size: 24px;
     background-color: crimson;
     padding: 16px 24px;    
+    border-radius: 12px;
+}
+
+.offbutton:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.threshold{
+    position: fixed;
+    left: 120px;
+    top: 87%;
+    transform: translateY(-50%);
 }
