@@ -43,7 +43,7 @@ export default function Login(props) {
                 props.history.push('/')
             }
             else {
-                props.history.push('/admin')
+                props.history.push('/admin/canhbaomayhu')
             }
             
         }
