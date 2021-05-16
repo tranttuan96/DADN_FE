@@ -1,10 +1,12 @@
 import React from "react";
-import Table from 'react-bootstrap/Table'
-import Button from 'react-bootstrap/Button'
+import Table from "react-bootstrap/Table";
+import Button from "react-bootstrap/Button";
+import moment from "moment";
 // npm install react-bootstrap bootstrap
+// npm install moment
 
 export default class MyComponent extends React.Component {
-  myprop = 19;
+  interval = null;
 
   constructor(props) {
     super(props);
@@ -46,68 +48,101 @@ export default class MyComponent extends React.Component {
     return data;
   }
 
-  compare(a, b) {
-    if (a.warnedAt < b.last_nom) {
-      return -1;
+  async putData(url = "", data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: "PUT", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    if (a.last_nom > b.last_nom) {
-      return 1;
-    }
-    return 0;
+
+    const response2 = await response.json(); // parses JSON response into native JavaScript objects
+    return response2;
   }
 
   componentDidMount() {
-    let newWarnings = [];
+    // let newWarnings = [];
 
-    this.fetchJSON("http://localhost:8080/api/warnings/")
-      .then((data) => {
-        let warnings = data._embedded.warnings;
+    // this.fetchJSON("http://localhost:8080/api/warnings/")
+    //   .then((data) => {
+    //     let warnings = data._embedded.warnings;
 
-        warnings.forEach((warning) => {
-          let newWarning = warning;
-          let moistureSensorHref = newWarning._links.moistureSensor.href;
-          this.fetchJSON(moistureSensorHref)
-            .then((data2) => {
-              let moistureSensorId = data2._links.self.href.split("/")[5];
-              let moistureSensorName = data2.name;
-              newWarning.moistureSensorId = moistureSensorId;
-              newWarning.moistureSensorName = moistureSensorName;
-              newWarnings.push(newWarning);
+    //     warnings.forEach((warning) => {
+    //       let newWarning = warning;
+    //       let moistureSensorHref = newWarning._links.moistureSensor.href;
+    //       this.fetchJSON(moistureSensorHref)
+    //         .then((data2) => {
+    //           let moistureSensorId = data2._links.self.href.split("/")[5];
+    //           let moistureSensorName = data2.name;
+    //           newWarning.moistureSensorId = moistureSensorId;
+    //           newWarning.moistureSensorName = moistureSensorName;
+    //           newWarnings.push(newWarning);
 
-              this.setState({
-                // isLoaded: true,
-                warnings: newWarnings.sort((w1, w2) =>
-                  w1.warnedAt.localeCompare(w2.warnedAt)
-                ),
-              });
-            })
-            .catch((e) => {
-              console.log(e);
-              this.setState({
-                isLoaded: true,
-                e,
-              });
-            });
+    //           this.setState({
+    //             // isLoaded: true,
+    //             warnings: newWarnings.sort((w1, w2) =>
+    //               w1.warnedAt.localeCompare(w2.warnedAt)
+    //             ),
+    //           });
+    //         })
+    //         .catch((e) => {
+    //           console.log(e);
+    //           this.setState({
+    //             isLoaded: true,
+    //             e,
+    //           });
+    //         });
+    //     });
+
+    //     // this.interval = setInterval(this.fetchJSON.bind(this), 2000);
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //     this.setState({
+    //       isLoaded: true,
+    //       e,
+    //     });
+    //   });
+
+    this.intervalId = setInterval(() => {
+      this.fetchJSON("http://localhost:8080/api/warnings/notRepairedWarnings")
+        .then((data) => {
+          this.setState({
+            isLoaded: true,
+            warnings: data.sort((w1, w2) =>
+              w1.warnedAt.localeCompare(w2.warnedAt)
+            ),
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          this.setState({
+            isLoaded: true,
+            e,
+          });
         });
-      })
-      .catch((e) => {
-        console.log(e);
-        this.setState({
-          isLoaded: true,
-          e,
-        });
-      });
+    }, 2000);
+  }
 
-    this.setState({
-      isLoaded: true,
-      // warnings: newWarnings.sort((w1, w2) =>
-      //   w1.warnedAt.localeCompare(w2.warnedAt)
-      // ),
-    });
+  componentWillUnmount() {
+    clearInterval(this.interval);
+    this.interval = null;
   }
 
   render() {
-    const { error, isLoaded, warnings, newWarnings } = this.state;
+    const { error, isLoaded, warnings } = this.state;
 
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -118,21 +153,34 @@ export default class MyComponent extends React.Component {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>Moisture sensor id</th>
-              <th>Moisture sensor name</th>
-              <th>Warned at</th>
+              <th>ID</th>
+              <th>Tên</th>
+              <th>Cảnh báo lúc</th>
               {/* <th>Repaired at</th> */}
+              <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
             {warnings.map((warning) => (
-              <tr key={warning._links.self.href}>
-                <td>{warning.moistureSensorId}</td>
-                <td>{warning.moistureSensorName}</td>
+              <tr key={warning.id}>
+                <td>{warning.moistureSensor.id}</td>
+                <td>{warning.moistureSensor.name}</td>
                 <td>{warning.warnedAt}</td>
                 {/* <td>{warning.repairedAt}</td> */}
                 <td>
-                  <Button>Đánh dấu đã xử lý</Button>
+                  <Button
+                    onClick={() => {
+                      this.putData(
+                        "http://localhost:8080/api/warnings/" + warning.id,
+                        {
+                          repairedAt: moment().format("HH:mm:ss D/MM/yyyy"),
+                        }
+                      );
+                      alert("Đã xử lý!");
+                    }}
+                  >
+                    Đánh dấu đã xử lý
+                  </Button>
                 </td>
               </tr>
             ))}
