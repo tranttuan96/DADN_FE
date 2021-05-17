@@ -1,9 +1,21 @@
 import axios from "axios"
 
 export class quanLyDoAmService {
-    layThongSoDoAm = () => {
+    layDanhSachNongTrai = () => {
         return axios({
-            url: "http://localhost:8080/api/v1/moiture",
+            url: "http://localhost:8080/api/farms",
+            method:'get',
+        })
+    }
+    layDanhSachSensor = (farmID) => {
+        return axios({
+            url: `http://localhost:8080/api/farms/${farmID}/moistureSensors`,
+            method:'get',
+        })
+    }
+    layThongSoDoAm = (sensorID) => {
+        return axios({
+            url: `http://localhost:8080/api/${sensorID}/moistureInfo`,
             method:'get',
         })
     }

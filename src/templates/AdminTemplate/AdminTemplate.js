@@ -13,10 +13,8 @@ const AdminLayout = (props) => {
 
     const taiKhoan = JSON.parse(localStorage.getItem('userLogin'))
     let [navActive, setNavActive] = useState({
-        home: true,
-        doAm: false,
-        mayBom: false,
-        lichSu: false,
+        canhBaoMayHu: true,
+        quanLyNongTrai: false,
     })
 
     const dangXuat = () => {
@@ -26,36 +24,16 @@ const AdminLayout = (props) => {
     }
 
     const updateNavActive = (name) => {
-        if (name === "home") {
+        if (name === "canhBaoMayHu") {
             let temp = { ...navActive };
-            temp.home = true;
-            temp.doAm = false;
-            temp.mayBom = false;
-            temp.lichSu = false;
+            temp.canhBaoMayHu = true;
+            temp.quanLyNongTrai = false;
             setNavActive(temp);
         }
-        else if (name === "doam") {
+        else if (name === "quanLyNongTrai") {
             let temp = { ...navActive };
-            temp.home = false;
-            temp.doAm = true;
-            temp.mayBom = false;
-            temp.lichSu = false;
-            setNavActive(temp);
-        }
-        else if (name === "maybom") {
-            let temp = { ...navActive };
-            temp.home = false;
-            temp.doAm = false;
-            temp.mayBom = true;
-            temp.lichSu = false;
-            setNavActive(temp);
-        }
-        else if (name === "lichsu") {
-            let temp = { ...navActive };
-            temp.home = false;
-            temp.doAm = false;
-            temp.mayBom = false;
-            temp.lichSu = true;
+            temp.canhBaoMayHu = false;
+            temp.quanLyNongTrai = true;
             setNavActive(temp);
         }
     }
@@ -65,7 +43,7 @@ const AdminLayout = (props) => {
             <ul className="navbar-nav" style={{ flexDirection: "column" }}>
                 <li className="nav-item">
                     <NavLink className="nav-link" to="/">
-                        <img className="avatar" src={"images/avatar-login.jpg"}></img>
+                        <img className="avatar" src={"/images/avatar-login.jpg"}></img>
                         {taiKhoan}
                     </NavLink>
                 </li>
@@ -97,15 +75,15 @@ const AdminLayout = (props) => {
                 <Header>
                     <nav className="navbar navbar-expand-lg navbar-light">
                         <div className="header__left col-4">
-                            <NavLink className="navbar-brand" to='/'><img src={"images/1004px-Logo-hcmut.svg.png"} style={{ width: 45, height: 45 }} /> Admin</NavLink>
+                            <NavLink className="navbar-brand" to='/'><img src={"/images/1004px-Logo-hcmut.svg.png"} style={{ width: 45, height: 45 }} /> Admin</NavLink>
                         </div>
                         <div className="header__center col-4 d-none d-md-flex" id="mainMenu">
                             <ul className="navbar-nav">
-                                <li className={`nav-item ${navActive.home ? 'isActive' : ''}`}>
-                                    <NavLink className="nav-link" to="/" onClick={() => { updateNavActive("home") }}>Quan ly nong trai</NavLink>
+                                <li className={`nav-item ${navActive.canhBaoMayHu ? 'isActive' : ''}`}>
+                                    <NavLink className="nav-link" to="/admin/canhbaomayhu" onClick={() => { updateNavActive("canhBaoMayHu") }}>Cảnh báo máy hư</NavLink>
                                 </li>
-                                <li className={`nav-item ${navActive.doAm ? 'isActive' : ''}`}>
-                                    <NavLink className="nav-link " to="/doam" onClick={() => { updateNavActive("doam") }}>Quan ly thiet bi</NavLink>
+                                <li className={`nav-item ${navActive.quanLyNongTrai ? 'isActive' : ''}`}>
+                                    <NavLink className="nav-link " to="/admin/quanlynongtrai" onClick={() => { updateNavActive("quanLyNongTrai") }}>Quản lý nông trại</NavLink>
                                 </li>
                             </ul>
                         </div>
