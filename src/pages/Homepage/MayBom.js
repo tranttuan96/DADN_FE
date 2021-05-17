@@ -1,12 +1,19 @@
 import { render } from '@testing-library/react';
-import React,{useState} from 'react';
+import React,{useEffect,useState} from 'react';
 import '../../assets/scss/Layout/maybom.css';
 import {Switch} from "antd";
 import {Modal,Button} from "react-bootstrap";
+import { qlDoAmService } from "../../services/quanLyDoAmService"
 import {pumpControllService} from "../../services/pumpControll";
 
 export default function MayBom() {
-    let [pumpstate,setPumpstate] = useState()
+
+
+    //let [currentFarm, setCurrentFarm] = useState("");
+    let [sensorID, setSensorID] = useState(1);
+    let [pumpID, setPumpID] = useState(1);
+
+    let [pumpstatus,setPumpStatus] = useState()
     let [intensity,setIntensity] = useState(100);
     let [upperThreshold,setUpperThreshold] = useState(900);
     let [lowerThreshold,setLowerThreshold] = useState(100);
@@ -14,6 +21,32 @@ export default function MayBom() {
     let [toggle,setToggle] = useState(false);
     const [show, setShow] = useState(false);
 
+    useEffect(() => {
+        setTimeout(() => {
+              qlDoAmService.layThongSoDoAm(sensorID).then(res => {
+                setHumidity(res.data.moisture);
+              }).catch(error => {
+                console.log(error.response);
+              });
+              pumpControllService.getPumpStatus(pumpID).then(res =>{
+                setPumpStatus(res.data.status);
+            }).catch(error => {
+                console.log(error.response);
+            });
+            }, 3000);
+        }        
+    );
+/*
+    useEffect(() =>{
+        setTimeout(() => {
+            pumpControllService.getPumpStatus(pumpID).then(res =>{
+                setPumpStatus(res.data.status);
+            }).catch(error => {
+                console.log(error.response);
+            });
+        }, 1000);
+    });
+*/
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -44,15 +77,12 @@ export default function MayBom() {
         render();
     }
 
-
-
     const handleTurnOn = () =>{
         pumpControllService.pumpTurnOn().then(response => {
             console.log(response);
         }).catch(error => {
             console.log(error);
         });
-        setPumpstate("Bật")
     }
 
     const handleTurnOff = () =>{
@@ -61,7 +91,6 @@ export default function MayBom() {
         }).catch(error => {
             console.log(error);
         });
-        setPumpstate("Tắt")
     }
 
     return (
@@ -74,7 +103,7 @@ export default function MayBom() {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Trạng thái</td><td>{pumpstate}</td>
+                        <td>Trạng thái</td><td>{pumpstatus}</td>
                     </tr>
                     <tr>
                         <td>Cường độ</td><td>{intensity}</td>
