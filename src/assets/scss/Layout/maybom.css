@@ -66,9 +66,9 @@
 
 .togglelabel{
     font-weight: bold;
-    font-size: larger;
+    font-size: 25px;
     color: crimson;
-    margin-left: 20%;
+    margin-left: 8%;
     margin-right: 20px;
 }
 
@@ -80,7 +80,7 @@
 
 .onbutton{
     position: fixed;
-    top: 30%;
+    top: 34%;
     right: 50%;
     margin-left: 50px;
     margin-right: 50px;
@@ -96,7 +96,7 @@
 
 .offbutton{
     position: fixed;
-    top: 30%;
+    top: 34%;
     left: 50%;
     margin-left: 50px;
     margin-right: 50px;
@@ -115,4 +115,30 @@
     left: 120px;
     top: 87%;
     transform: translateY(-50%);
+}
+
+.thresholdform{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.upperinput{
+    margin-left: 23px;
+    margin-right: auto;
+}
+
+.lowerinput{
+    margin-left: 20px;
+    margin-right: auto;
+}
+
+.thresholdbutton{
+    background: blue;
+    color: white;
+    border: 2px solid blue;
+    margin-top: 20px;
+    margin-left: 40%;
+    margin-right: auto;
+    border-radius: 3px;
+    padding: 5px 10px;
 }

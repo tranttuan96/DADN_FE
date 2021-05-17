@@ -127,19 +127,16 @@ export default function Homepage() {
                     </div>
                 </div>
 
-            </div>
-            <div className="item">
-              <div className="icon">
-                <img src={"images/engine-icon.png"} />
-              </div>
-              <div className="parameterName">Máy bơm</div>
-              <div className="detail">
-                Trạng thái: {parameter.engine.status}
-              </div>
-            </div>
+                    <div className="item">
+                      <div className="icon">
+                        <img src={"images/engine-icon.png"} />
+                      </div>
+                      <div className="parameterName">Máy bơm</div>
+                      <div className="detail">
+                        Trạng thái: {parameter.engine.status}
+                      </div>
+                    </div>
           </div>
-        </div>
-      );
     }
   };
 

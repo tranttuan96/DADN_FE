@@ -1,48 +1,67 @@
 import { render } from '@testing-library/react';
-import React,{useState} from 'react'
-import '../../assets/scss/Layout/maybom.css'
-import {Switch} from "antd"
-import {Modal,Button} from "react-bootstrap"
+import React,{useState} from 'react';
+import '../../assets/scss/Layout/maybom.css';
+import {Switch} from "antd";
+import {Modal,Button} from "react-bootstrap";
+import {pumpControllService} from "../../services/pumpControll";
 
 export default function MayBom() {
-    let[intensity,setIntensity]=useState(100);
-    let[toggle,setToggle]=useState(false);
+    let [pumpstate,setPumpstate] = useState()
+    let [intensity,setIntensity] = useState(100);
+    let [upperThreshold,setUpperThreshold] = useState(900);
+    let [lowerThreshold,setLowerThreshold] = useState(100);
+    let [humidity, setHumidity] = useState();
+    let [toggle,setToggle] = useState(false);
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    var info = [
-        {label: "Trạng thái", value: "Tắt"},
-        {label: "Cường độ", value: "100"},
-        {label: "Ngưỡng trên", value: "900"},
-        {label: "Ngưỡng dưới", value: "100"},
-        {label: "Độ ẩm", value: "512"},
-    ]
-
-    const renderInfo = (info,index) => {
-        return(
-            <tr key ={index}>
-                <td>{info.label}</td>
-                <td>{info.value}</td>
-            </tr>
-        )
-    }
-
-
-    function getIntensity(event) {
-        event.preventDefault();
+    const handleIntensity = (event) =>{
         setIntensity(event.target.value);
     }
 
     const saveIntensity = (event) => {
         event.preventDefault();
-        alert("intensity change");
+        alert("intensity saved");
+    }
+
+    const handleUpperThreshold = (event) =>{
+        setUpperThreshold(event.target.value);
+    }
+    
+    const handleLowerThreshold = (event) =>{
+        setLowerThreshold(event.target.value);
+    }
+
+    const saveThreshold = (event) => {
+        event.preventDefault();
+        alert("threshold saved");
     }
 
     const toggler = () =>{
         toggle ? setToggle(false) : setToggle(true);
         render();
+    }
+
+
+
+    const handleTurnOn = () =>{
+        pumpControllService.pumpTurnOn().then(response => {
+            console.log(response);
+        }).catch(error => {
+            console.log(error);
+        });
+        setPumpstate("Bật")
+    }
+
+    const handleTurnOff = () =>{
+        pumpControllService.pumpTurnOff().then(response => {
+            console.log(response);
+        }).catch(error => {
+            console.log(error);
+        });
+        setPumpstate("Tắt")
     }
 
     return (
@@ -55,19 +74,19 @@ export default function MayBom() {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Trạng thái</td><td>Tắt</td>
+                        <td>Trạng thái</td><td>{pumpstate}</td>
                     </tr>
                     <tr>
                         <td>Cường độ</td><td>{intensity}</td>
                     </tr>
                     <tr>
-                        <td>Ngưỡng trên</td><td>900</td>
+                        <td>Ngưỡng trên</td><td>{upperThreshold}</td>
                     </tr>
                     <tr>
-                        <td>Ngưỡng dưới</td><td>100</td>
+                        <td>Ngưỡng dưới</td><td>{lowerThreshold}</td>
                     </tr>
                     <tr>
-                        <td>Độ ẩm</td><td>500</td>
+                        <td>Độ ẩm</td><td>{humidity}</td>
                     </tr>
                 </tbody>
             </table>
@@ -75,7 +94,7 @@ export default function MayBom() {
             <form className="intensity" onSubmit={saveIntensity}>
                 <div>
                     <label className="intensitylabel">Cường độ:</label>
-                    <input name="intent" type="text" onChange={getIntensity} className="intensityinput"/>
+                    <input name="intensity" type="text" className="intensityinput" onChange={handleIntensity}/>
                     <button className="intensitybutton">SAVE</button>
                 </div>
             </form>
@@ -86,8 +105,8 @@ export default function MayBom() {
                 {
                     toggle && (
                         <div className="manual" >
-                            <button className="onbutton">ON</button>
-                            <button className="offbutton">OFF</button>
+                            <button className="onbutton" onClick={handleTurnOn}>ON</button>
+                            <button className="offbutton" onClick={handleTurnOff}>OFF</button>
                         </div>
                     )
                 }
@@ -99,26 +118,25 @@ export default function MayBom() {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header>
-                <Modal.Title>Thiết lập ngưỡng độ ẩm</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                <form className="thresholdform">
-                <div>
-                    <label className="upperlabel">Ngưỡng trên:</label>
-                    <input name="intent" type="text" onChange={getIntensity} className="upperinput"/> <br/>
-                    <label className="lowerlabel">Ngưỡng dưới:</label>
-                    <input name="intent" type="text" onChange={getIntensity} className="lowerinput"/> <br/>
-                </div>
-                </form>
-                </Modal.Body>
-                <Modal.Footer>
+                    <Modal.Title>Thiết lập ngưỡng độ ẩm</Modal.Title>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={saveIntensity}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
+                </Modal.Header>
+                <Modal.Body>
+                    <p/> <p/>
+                    <form className="thresholdform" onSubmit={saveThreshold}>
+                    <div>
+                        <label className="upperlabel">Ngưỡng trên:</label>
+                        <input name="upperThreshold" type="text" value={upperThreshold}  className="upperinput" onChange={handleUpperThreshold}/> <br/> <p/>
+                    </div>
+                    <div>
+                        <label className="lowerlabel">Ngưỡng dưới:</label>
+                        <input name="lowerThreshold" type="text" value={lowerThreshold} className="lowerinput" onChange={handleLowerThreshold}/> <br/> <p/>
+                    </div>
+                        <button className="thresholdbutton"> Save Changes </button> 
+                    </form>
+                </Modal.Body>
             </Modal>
 
         </div>
