@@ -1,16 +1,16 @@
 import axios from "axios"
 
 export class pumpControll {
-    pumpTurnOn = () => {
+    pumpTurnOn = (pumpID) => {
         return axios({
-            url: "http://localhost:8080/pump/control?state=ON",
+            url: `http://localhost:8080/pump/control/${pumpID}?state=ON`,
             method:'post',
         })
     }
 
-    pumpTurnOff = () => {
+    pumpTurnOff = (pumpID) => {
         return axios({
-            url: "http://localhost:8080/pump/control?state=OFF",
+            url: `http://localhost:8080/pump/control/${pumpID}?state=OFF`,
             method:'post',
         })
     }

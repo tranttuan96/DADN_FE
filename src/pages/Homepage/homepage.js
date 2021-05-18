@@ -32,10 +32,10 @@ export default function Homepage() {
             setTime(res.data.updatedAt)
             setFlag(!flag);
           }).catch(error => {
-            console.log(error.response);
+            console.log(error.response.data);
           });
         }).catch(error => {
-          console.log(error.response);
+          console.log(error.response.data);
         });
       }
       else {
@@ -45,7 +45,7 @@ export default function Homepage() {
             setTime(res.data.updatedAt)
             setFlag(!flag);
           }).catch(error => {
-            console.log(error.response);
+            console.log(error.response.data);
           });
         }, 3000);
       }
@@ -55,7 +55,7 @@ export default function Homepage() {
       qlDoAmService.layDanhSachNongTrai().then(res => {
         setFarms(res.data);
       }).catch(error => {
-        console.log(error.response);
+        console.log(error.response.data);
       });
     }
   });

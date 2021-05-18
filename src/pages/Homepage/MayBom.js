@@ -5,9 +5,10 @@ import {Switch} from "antd";
 import {Modal,Button} from "react-bootstrap";
 import { qlDoAmService } from "../../services/quanLyDoAmService"
 import {pumpControllService} from "../../services/pumpControll";
+import {ThresholdService} from "../../services/thresholdService";
+import axios from "axios"
 
 export default function MayBom() {
-
 
     //let [currentFarm, setCurrentFarm] = useState("");
     let [sensorID, setSensorID] = useState(1);
@@ -15,23 +16,31 @@ export default function MayBom() {
 
     let [pumpstatus,setPumpStatus] = useState()
     let [intensity,setIntensity] = useState(100);
-    let [upperThreshold,setUpperThreshold] = useState(900);
-    let [lowerThreshold,setLowerThreshold] = useState(100);
+    let [upperThreshold,setUpperThreshold] = useState();
+    let [lowerThreshold,setLowerThreshold] = useState();
+    let [upper,setUpper] = useState();
+    let [lower,setLower] = useState();
     let [humidity, setHumidity] = useState();
     let [toggle,setToggle] = useState(false);
     const [show, setShow] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
-              qlDoAmService.layThongSoDoAm(sensorID).then(res => {
+            qlDoAmService.layThongSoDoAm(sensorID).then(res => {
                 setHumidity(res.data.moisture);
-              }).catch(error => {
-                console.log(error.response);
-              });
-              pumpControllService.getPumpStatus(pumpID).then(res =>{
+            }).catch(error => {
+                console.log(error.response.data);
+            });
+            pumpControllService.getPumpStatus(pumpID).then(res =>{
                 setPumpStatus(res.data.status);
             }).catch(error => {
-                console.log(error.response);
+                console.log(error.response.data);
+            });
+            ThresholdService.getCurrentThreshold(sensorID).then(res =>{
+                setLower(res.data.lower)
+                setUpper(res.data.upper)
+            }).catch(error => {
+                console.log(error.response.data);
             });
             }, 3000);
         }        
@@ -69,6 +78,14 @@ export default function MayBom() {
 
     const saveThreshold = (event) => {
         event.preventDefault();
+        axios.post(`http://localhost:8080/api/threshold/${sensorID}`, {
+            upper: `${upperThreshold}`,
+            lower: `${lowerThreshold}`
+        }).then(res =>{
+            console.log(res.response);
+        }).catch(error => {
+            console.log(error.response);
+        });
         alert("threshold saved");
     }
 
@@ -78,7 +95,7 @@ export default function MayBom() {
     }
 
     const handleTurnOn = () =>{
-        pumpControllService.pumpTurnOn().then(response => {
+        pumpControllService.pumpTurnOn(pumpID).then(response => {
             console.log(response);
         }).catch(error => {
             console.log(error);
@@ -86,7 +103,7 @@ export default function MayBom() {
     }
 
     const handleTurnOff = () =>{
-        pumpControllService.pumpTurnOff().then(response => {
+        pumpControllService.pumpTurnOff(pumpID).then(response => {
             console.log(response);
         }).catch(error => {
             console.log(error);
@@ -109,10 +126,10 @@ export default function MayBom() {
                         <td>Cường độ</td><td>{intensity}</td>
                     </tr>
                     <tr>
-                        <td>Ngưỡng trên</td><td>{upperThreshold}</td>
+                        <td>Ngưỡng trên</td><td>{upper}</td>
                     </tr>
                     <tr>
-                        <td>Ngưỡng dưới</td><td>{lowerThreshold}</td>
+                        <td>Ngưỡng dưới</td><td>{lower}</td>
                     </tr>
                     <tr>
                         <td>Độ ẩm</td><td>{humidity}</td>
