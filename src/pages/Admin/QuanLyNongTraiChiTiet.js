@@ -1,4 +1,7 @@
 import React from "react";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -216,16 +219,48 @@ export default class MyComponent extends React.Component {
       console.log(this.props.match);
       console.log(this.props.match.params.farmId);
       return (
-        <div>
-          <h2>Thông tin nông trại</h2>
-          <span>ID: {farmJSON.id}</span>
-          <br></br>
-          <span>Tên: {farmJSON.name}</span>
-          <br></br>
-          <span>Vị trí địa lý: {farmJSON.location}</span>
-          <h2>Thiết bị trong nông trại</h2>
+        <Container className="my-5">
+          <hr></hr>
+          <Row className="mb-3 justify-content-center">
+            <Row className="justify-content-center">
+              <Col xs="10" sm="8" md="6" lg="4">
+                <h2>Thông tin nông trại</h2>
+              </Col>
+            </Row>
+            <Row className="justify-content-center">
+              <Col xs="5" sm="4" md="3" lg="2">
+                <b>ID:</b>
+              </Col>
+              <Col xs="5" sm="4" md="3" lg="2">
+                {farmJSON.id}
+              </Col>
+            </Row>
+            <Row className="justify-content-center">
+              <Col xs="5" sm="4" md="3" lg="2">
+                <b>Tên:</b>
+              </Col>
+              <Col xs="5" sm="4" md="3" lg="2">
+                {farmJSON.name}
+              </Col>
+            </Row>
+            <Row className="justify-content-center">
+              <Col xs="5" sm="4" md="3" lg="2">
+                <b>Vị trí:</b>
+              </Col>
+              <Col xs="5" sm="4" md="3" lg="2">
+                {farmJSON.location}
+              </Col>
+            </Row>
+          </Row>
+          <hr></hr>
+          <Row className="justify-content-center mb-3">
+            <Col xs="10" sm="8" md="6" lg="4">
+              <h3>Thiết bị trong nông trại</h3>
+            </Col>
+          </Row>
           <h4>Cảm biến độ ẩm</h4>
           <Button
+            className="mb-3"
             onClick={() =>
               this.setState({
                 ...this.state,
@@ -516,7 +551,7 @@ export default class MyComponent extends React.Component {
                     );
                   }
 
-									this.setState({ ...this.state, showModalDelete: false });
+                  this.setState({ ...this.state, showModalDelete: false });
                 }}
               >
                 Chắc chắn
@@ -548,6 +583,7 @@ export default class MyComponent extends React.Component {
                   <td>{moistureSensor.name}</td>
                   <td>
                     <Button
+                      className="me-3"
                       variant="warning"
                       onClick={(e) => {
                         e.preventDefault();
@@ -565,6 +601,7 @@ export default class MyComponent extends React.Component {
                       Cập nhật
                     </Button>
                     <Button
+                      className="me-3"
                       variant="danger"
                       onClick={(e) => {
                         e.preventDefault();
@@ -589,6 +626,7 @@ export default class MyComponent extends React.Component {
 
           <h4>Máy bơm</h4>
           <Button
+            className="mb-3"
             onClick={() =>
               this.setState({
                 ...this.state,
@@ -617,6 +655,7 @@ export default class MyComponent extends React.Component {
                   <td>{pump.name}</td>
                   <td>
                     <Button
+                      className="me-3"
                       variant="warning"
                       onClick={(e) => {
                         e.preventDefault();
@@ -634,6 +673,7 @@ export default class MyComponent extends React.Component {
                       Cập nhật
                     </Button>
                     <Button
+                      className="me-3"
                       variant="danger"
                       onClick={(e) => {
                         e.preventDefault();
@@ -655,7 +695,7 @@ export default class MyComponent extends React.Component {
               ))}
             </tbody>
           </Table>
-        </div>
+        </Container>
       );
     }
   }

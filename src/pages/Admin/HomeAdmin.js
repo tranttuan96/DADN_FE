@@ -1,4 +1,5 @@
 import React from "react";
+import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import moment from "moment";
@@ -150,42 +151,44 @@ export default class MyComponent extends React.Component {
       return <div>Loading...</div>;
     } else {
       return (
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Tên</th>
-              <th>Cảnh báo lúc</th>
-              {/* <th>Repaired at</th> */}
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {warnings.map((warning) => (
-              <tr key={warning.id}>
-                <td>{warning.moistureSensor.id}</td>
-                <td>{warning.moistureSensor.name}</td>
-                <td>{warning.warnedAt}</td>
-                {/* <td>{warning.repairedAt}</td> */}
-                <td>
-                  <Button
-                    onClick={() => {
-                      this.putData(
-                        "http://localhost:8080/api/warnings/" + warning.id,
-                        {
-                          repairedAt: moment().format("HH:mm:ss D/MM/yyyy"),
-                        }
-                      );
-                      alert("Đã xử lý!");
-                    }}
-                  >
-                    Đánh dấu đã xử lý
-                  </Button>
-                </td>
+        <Container className="my-5">
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Cảnh báo lúc</th>
+                {/* <th>Repaired at</th> */}
+                <th>Hành động</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {warnings.map((warning) => (
+                <tr key={warning.id}>
+                  <td>{warning.moistureSensor.id}</td>
+                  <td>{warning.moistureSensor.name}</td>
+                  <td>{warning.warnedAt}</td>
+                  {/* <td>{warning.repairedAt}</td> */}
+                  <td>
+                    <Button
+                      onClick={() => {
+                        this.putData(
+                          "http://localhost:8080/api/warnings/" + warning.id,
+                          {
+                            repairedAt: moment().format("HH:mm:ss D/MM/yyyy"),
+                          }
+                        );
+                        alert("Đã xử lý!");
+                      }}
+                    >
+                      Đánh dấu đã xử lý
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Container>
       );
     }
   }

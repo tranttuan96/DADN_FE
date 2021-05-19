@@ -47,17 +47,11 @@ const AdminLayout = (props) => {
                         {taiKhoan}
                     </NavLink>
                 </li>
-                <li className={`nav-item ${navActive.home ? 'isActive' : ''}`}>
-                    <NavLink className="nav-link" to="/" onClick={() => { updateNavActive("home") }}>Trang chủ</NavLink>
+                <li className={`nav-item ${navActive.canhBaoMayHu ? 'isActive' : ''}`}>
+                    <NavLink className="nav-link" to="/admin/canhbaomayhu" onClick={() => { updateNavActive("canhBaoMayHu") }}>Cảnh báo máy hư</NavLink>
                 </li>
-                <li className={`nav-item ${navActive.doAm ? 'isActive' : ''}`}>
-                    <NavLink className="nav-link" to="/doam" onClick={() => { updateNavActive("doam") }}>Độ ẩm</NavLink>
-                </li>
-                <li className={`nav-item ${navActive.mayBom ? 'isActive' : ''}`}>
-                    <NavLink className="nav-link" to="/maybom" onClick={() => { updateNavActive("maybom") }}>Máy bơm</NavLink>
-                </li>
-                <li className={`nav-item ${navActive.lichSu ? 'isActive' : ''}`}>
-                    <NavLink className="nav-link " to="/lichsu" onClick={() => { updateNavActive("lichsu") }}>Lịch sử</NavLink>
+                <li className={`nav-item ${navActive.quanLyNongTrai ? 'isActive' : ''}`}>
+                    <NavLink className="nav-link" to="/admin/quanlynongtrai" onClick={() => { updateNavActive("quanLyNongTrai") }}>Quản lý nông trại</NavLink>
                 </li>
                 <li className="nav-item ">
                     <NavLink className="nav-link" to="/login" onClick={() => { dangXuat() }}>
@@ -75,7 +69,7 @@ const AdminLayout = (props) => {
                 <Header>
                     <nav className="navbar navbar-expand-lg navbar-light">
                         <div className="header__left col-4">
-                            <NavLink className="navbar-brand" to='/'><img src={"/images/1004px-Logo-hcmut.svg.png"} style={{ width: 45, height: 45 }} /> Admin</NavLink>
+                            <NavLink className="navbar-brand" to='/'><img src={"/images/1004px-Logo-hcmut.svg.png"} style={{ width: 45, height: 45 }} />&nbsp;Admin</NavLink>
                         </div>
                         <div className="header__center col-4 d-none d-md-flex" id="mainMenu">
                             <ul className="navbar-nav">

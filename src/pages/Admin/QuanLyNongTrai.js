@@ -1,4 +1,5 @@
 import React from "react";
+import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -108,7 +109,7 @@ export default class MyComponent extends React.Component {
 
     const response2 = await response.json(); // parses JSON response into native JavaScript objects
 
-		alert("Xoá nông trại thành công!");
+    alert("Xoá nông trại thành công!");
 
     return response2;
   }
@@ -150,8 +151,9 @@ export default class MyComponent extends React.Component {
     } else {
       console.log(this.state);
       return (
-        <div>
+        <Container className="my-5">
           <Button
+            className="mb-3"
             onClick={() =>
               this.setState({
                 ...this.state,
@@ -188,7 +190,7 @@ export default class MyComponent extends React.Component {
                     );
                   }
 
-									this.setState({ ...this.state, showModalAdd: false });
+                  this.setState({ ...this.state, showModalAdd: false });
                 }}
               >
                 <Form.Group controlId="farmName" className="my-3">
@@ -253,8 +255,8 @@ export default class MyComponent extends React.Component {
                   this.deleteData(
                     "http://localhost:8080/api/farms/" + this.state.form.id
                   );
-                  
-									this.setState({ ...this.state, showModalDelete: false });
+
+                  this.setState({ ...this.state, showModalDelete: false });
                 }}
               >
                 Chắc chắn
@@ -287,6 +289,7 @@ export default class MyComponent extends React.Component {
                   <td>{farm.location}</td>
                   <td>
                     <Button
+                      className="me-3"
                       variant="warning"
                       onClick={(e) => {
                         e.preventDefault();
@@ -304,6 +307,7 @@ export default class MyComponent extends React.Component {
                       Cập nhật
                     </Button>
                     <Button
+                      className="me-3"
                       variant="danger"
                       onClick={(e) => {
                         e.preventDefault();
@@ -316,7 +320,7 @@ export default class MyComponent extends React.Component {
                     >
                       Xoá
                     </Button>
-                    <Button variant="outline-dark">
+                    <Button className="me-3" variant="outline-dark">
                       <NavLink to={"/admin/quanlynongtrai/" + farm.id}>
                         Xem thiết bị trong nông trại
                       </NavLink>
@@ -326,7 +330,7 @@ export default class MyComponent extends React.Component {
               ))}
             </tbody>
           </Table>
-        </div>
+        </Container>
       );
     }
   }
