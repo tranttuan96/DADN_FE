@@ -13,9 +13,21 @@ export class quanLyDoAmService {
             method:'get',
         })
     }
+    layDanhSachMayBom = (farmID) => {
+        return axios({
+            url: `http://localhost:8080/api/farms/${farmID}/pumps`,
+            method:'get',
+        })
+    }
     layThongSoDoAm = (sensorID) => {
         return axios({
             url: `http://localhost:8080/api/${sensorID}/moistureInfo`,
+            method:'get',
+        })
+    }
+    layThongSoMayBom = (pumpID) => {
+        return axios({
+            url: `http://localhost:8080/api/${pumpID}/pumpInfo`,
             method:'get',
         })
     }
