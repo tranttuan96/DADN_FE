@@ -1,25 +1,24 @@
 .wrapper
 {
 	text-align: center;
-	align-items: center
+	align-items: center;
+	font-family: "Montserrat", sans-serif;
 }
 
-.choose-information
-{
-	margin: 30px 60px;
+.header{
+	color: #6c63ff;
+	margin: 20px 0px;
 }
 
-
-.MQTT
-{
-	width: 100%;
+.with-80 {
+	width: 80% !important;
+	margin: 0 auto;
 }
-
 .Apply-Button
 {
 	width: 200px;
 	height: 50px !important;
-	margin: 25px 25px !important;
+	margin: 30px 25px !important;
 	font-size: 1.5rem !important;
 }
 
@@ -30,14 +29,8 @@
 	margin: 25px 25px !important;
 	font-size: 1.5rem !important;
 }
-
-.choose-date
-{
-	font-size: 1rem;
-}
-
-.table_history
-{
+.table-with {
 	width: 80%;
 	margin: 0 auto;
 }
+
