@@ -28,6 +28,7 @@ export default class LichSu extends React.Component {
 		if (this.state.History_value == "a") {
 			try {
 				let url = 'http://localhost:8080/api/moistureInfoes/time?' + this.state.range_picker
+				console.log(url)
 				let response = await fetch(url)
 				let result = await response.json()
 				this.setState({data: result})
@@ -40,6 +41,7 @@ export default class LichSu extends React.Component {
 		else {
 			try {
 				let url = 'http://localhost:8080/api/pumpInfo/time?' + this.state.range_picker
+				console.log(url)
 				let response = await fetch(url)
 				let result = await response.json()
 				this.setState({pump_data: result})
@@ -52,9 +54,20 @@ export default class LichSu extends React.Component {
 	}
 
 	handleChangeDebut = async (range) => {
-		let start_Date =  await (range[0].hours() + ":" + range[0].minutes() + ":" + range[0].seconds() + " " + range[0].date()  + "/" + Number(range[0].month() + 1) + "/" + range[0].year());
 
-	    let end_Date = await (range[1].hours() + ":" + range[1].minutes() + ":" + range[1].seconds() + " " + range[1].date()  + "/" + Number(range[1].month() + 1) + "/" + range[1].year());
+		let start_Date
+		if (range[0].hours() < 10) {
+			start_Date  =  await ('0' + range[0].hours() + ":" + range[0].minutes() + ":" + range[0].seconds() + " " + range[0].date()  + "/" + Number(range[0].month() + 1) + "/" + range[0].year());
+		} else {
+			start_Date  =  await (range[0].hours() + ":" + range[0].minutes() + ":" + range[0].seconds() + " " + range[0].date()  + "/" + Number(range[0].month() + 1) + "/" + range[0].year());
+		}
+
+	    let end_Date
+	    if (range[1].hours() < 10) {
+	    	end_Date = await ('0' + range[1].hours() + ":" + range[1].minutes() + ":" + range[1].seconds() + " " + range[1].date()  + "/" + Number(range[1].month() + 1) + "/" + range[1].year());
+	    } else {
+	    	end_Date = await (range[1].hours() + ":" + range[1].minutes() + ":" + range[1].seconds() + " " + range[1].date()  + "/" + Number(range[1].month() + 1) + "/" + range[1].year());
+	    }
 
 	    let range_picker ='time_start=' + start_Date + " &time_end=" + end_Date
 
