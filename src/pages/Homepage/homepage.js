@@ -9,16 +9,16 @@ export default function Homepage() {
   let [currentFarm, setCurrentFarm] = useState();
   let [sensorID, setSensorID] = useState("");
 
+  let [pumpID, setPumpID] = useState("");
+
   let [time, setTime] = useState();
   let [humidity, setHumidity] = useState();
+  let [pumpInfo, setPumpInfo] = useState({
+    status: "OFF", 
+    intensity: ""
+  })
 
   let [flag, setFlag] = useState(true);
-
-  let parameter = {
-    time: "11:00AM 04/05/2021",
-    humidity: "700",
-    engine: { status: "OFF", intensity: "1" },
-  };
 
   let [firstAccess, setFirstAccess] = useState(true);
 
@@ -37,6 +37,20 @@ export default function Homepage() {
         }).catch(error => {
           console.log(error.response);
         });
+        qlDoAmService.layDanhSachMayBom(farms[currentFarm].id).then(res => {
+          setPumpID(res.data[0].pumpId);
+          qlDoAmService.layThongSoMayBom(res.data[0].pumpId).then(res => {
+              let curPumpInfo = {
+                status: res.data.status, 
+                intensity: res.data.intensity
+              }
+              setPumpInfo(curPumpInfo);
+          }).catch(error => {
+            console.log(error.response.data);
+          });
+        }).catch(error => {
+          console.log(error.response.data);
+        });
       }
       else {
         setTimeout(() => {
@@ -47,6 +61,15 @@ export default function Homepage() {
           }).catch(error => {
             console.log(error.response);
           });
+          qlDoAmService.layThongSoMayBom(pumpID).then(res => {
+            let curPumpInfo = {
+              status: res.data.status, 
+              intensity: res.data.intensity
+            }
+            setPumpInfo(curPumpInfo);
+        }).catch(error => {
+          console.log(error.response.data);
+        });
         }, 3000);
       }
       
@@ -132,7 +155,11 @@ export default function Homepage() {
               Máy bơm
                         </div>
             <div className="detail">
-              Trạng thái: {parameter.engine.status}
+              {pumpInfo.status == "OFF" ? <div>Trạng thái: {pumpInfo.status}</div> : <div>
+                Trạng thái: {pumpInfo.status}
+                 - Cường độ: {pumpInfo.intensity}
+                </div>}
+              
             </div>
 
           </div>
