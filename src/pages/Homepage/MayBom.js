@@ -22,7 +22,9 @@ export default function MayBom() {
     let [lower,setLower] = useState();
     let [humidity, setHumidity] = useState();
     let [toggle,setToggle] = useState(false);
-    const [show, setShow] = useState(false);
+    let [showThreshold, setShowThreshold] = useState(false);
+    let [showTurnOn, setShowTurnOn] = useState(false);
+    let [showTurnOff, setShowTurnOff] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
@@ -56,8 +58,12 @@ export default function MayBom() {
         }, 1000);
     });
 */
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleCloseThreshold = () => setShowThreshold(false);
+    const handleShowThreshold = () => setShowThreshold(true);
+    const handleCloseTurnOn = () => setShowTurnOn(false);
+    const handleShowTurnOn = () => setShowTurnOn(true);
+    const handleCloseTurnOff = () => setShowTurnOff(false);
+    const handleShowTurnOff = () => setShowTurnOff(true);
 
     const handleIntensity = (event) =>{
         setIntensity(event.target.value);
@@ -86,6 +92,7 @@ export default function MayBom() {
         }).catch(error => {
             console.log(error.response);
         });
+        setShowThreshold(false);
         alert("threshold saved");
     }
 
@@ -100,6 +107,7 @@ export default function MayBom() {
         }).catch(error => {
             console.log(error);
         });
+        setShowTurnOn(false);
     }
 
     const handleTurnOff = () =>{
@@ -108,6 +116,7 @@ export default function MayBom() {
         }).catch(error => {
             console.log(error);
         });
+        setShowTurnOff(false);
     }
 
     return (
@@ -151,21 +160,63 @@ export default function MayBom() {
                 {
                     toggle && (
                         <div className="manual" >
-                            <button className="onbutton" onClick={handleTurnOn}>ON</button>
-                            <button className="offbutton" onClick={handleTurnOff}>OFF</button>
+                            <Button className="onbutton" variant="success" onClick={handleShowTurnOn}>
+                                ON
+                            </Button>
+
+                            <Modal show={showTurnOn} onHide={handleCloseTurnOn}>
+                                <Modal.Header>
+                                    <Modal.Title>Bật máy bơm</Modal.Title>
+
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <p/> <p/>
+                                    Bạn có chắc chắn muốn bật máy bơm?
+                                    <p/> <p/>
+                                    <Button className="yesbutton" variant="primary" onClick={handleTurnOn}>
+                                        Có
+                                    </Button>
+                                    <Button className="nobutton" variant="secondary" onClick={handleCloseTurnOn}>
+                                        Không
+                                    </Button>
+                                </Modal.Body>
+                            </Modal>
+
+                            <Button className="offbutton" variant="danger" onClick={handleShowTurnOff}>
+                                OFF
+                            </Button>
+
+                            <Modal show={showTurnOff} onHide={handleCloseTurnOff}>
+                                <Modal.Header>
+                                    <Modal.Title>Tắt máy bơm</Modal.Title>
+
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <p/> <p/>
+                                    Bạn có chắc chắn muốn tắt máy bơm?
+                                    <p/> <p/>
+                                    <Button className="yesbutton" variant="primary" onClick={handleTurnOff}>
+                                        Có
+                                    </Button>
+                                    <Button className="nobutton" variant="secondary" onClick={handleCloseTurnOff}>
+                                        Không
+                                    </Button>
+                                </Modal.Body>
+                            </Modal>
+
                         </div>
                     )
                 }
             </div>
 
-            <Button className="threshold" variant="primary" onClick={handleShow}>
+            <Button className="threshold" variant="primary" onClick={handleShowThreshold}>
                 Thiết lập ngưỡng độ ẩm
             </Button>
 
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={showThreshold} onHide={handleCloseThreshold}>
                 <Modal.Header>
                     <Modal.Title>Thiết lập ngưỡng độ ẩm</Modal.Title>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleCloseThreshold}>
                         Close
                     </Button>
                 </Modal.Header>

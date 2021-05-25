@@ -110,6 +110,22 @@
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
+.yesbutton{
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 37%;
+    margin-right: 25px;
+    border-radius: 3px;
+    padding: 8px 12px;
+}
+
+.nobutton{
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    padding: 8px 12px;
+}
+
 .threshold{
     position: fixed;
     left: 120px;
