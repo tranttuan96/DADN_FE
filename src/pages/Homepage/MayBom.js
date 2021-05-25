@@ -29,18 +29,18 @@ export default function MayBom() {
             qlDoAmService.layThongSoDoAm(sensorID).then(res => {
                 setHumidity(res.data.moisture);
             }).catch(error => {
-                console.log(error.response.data);
+                console.log(error.response);
             });
             pumpControllService.getPumpStatus(pumpID).then(res =>{
                 setPumpStatus(res.data.status);
             }).catch(error => {
-                console.log(error.response.data);
+                console.log(error.response);
             });
             ThresholdService.getCurrentThreshold(sensorID).then(res =>{
                 setLower(res.data.lower)
                 setUpper(res.data.upper)
             }).catch(error => {
-                console.log(error.response.data);
+                console.log(error.response);
             });
             }, 3000);
         }        

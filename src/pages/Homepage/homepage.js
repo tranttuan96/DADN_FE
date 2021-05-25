@@ -32,10 +32,10 @@ export default function Homepage() {
             setTime(res.data.updatedAt)
             setFlag(!flag);
           }).catch(error => {
-            console.log(error.response.data);
+            console.log(error.response);
           });
         }).catch(error => {
-          console.log(error.response.data);
+          console.log(error.response);
         });
       }
       else {
@@ -45,7 +45,7 @@ export default function Homepage() {
             setTime(res.data.updatedAt)
             setFlag(!flag);
           }).catch(error => {
-            console.log(error.response.data);
+            console.log(error.response);
           });
         }, 3000);
       }
