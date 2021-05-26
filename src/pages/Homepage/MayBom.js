@@ -84,16 +84,22 @@ export default function MayBom() {
 
     const saveThreshold = (event) => {
         event.preventDefault();
-        axios.post(`http://localhost:8080/api/threshold/${sensorID}`, {
-            upper: `${upperThreshold}`,
-            lower: `${lowerThreshold}`
-        }).then(res =>{
-            console.log(res.response);
-        }).catch(error => {
-            console.log(error.response);
-        });
-        setShowThreshold(false);
-        alert("threshold saved");
+        if(`${upperThreshold}` < `${lowerThreshold}`){
+            alert("Ngưỡng dưới không được cao hơn ngưỡng trên");
+        }
+        else{
+            axios.post(`http://localhost:8080/api/threshold/${sensorID}`, {
+                upper: `${upperThreshold}`,
+                lower: `${lowerThreshold}`
+            }).then(res =>{
+                console.log(res.response);
+            }).catch(error => {
+                console.log(error.response);
+            });
+            setShowThreshold(false);
+            alert("threshold saved");
+        }
+
     }
 
     const toggler = () =>{
