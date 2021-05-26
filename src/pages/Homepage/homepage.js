@@ -26,8 +26,8 @@ export default function Homepage() {
     if (!firstAccess) {
       if(sensorID === "") {
         qlDoAmService.layDanhSachSensor(farms[currentFarm].id).then(res => {
-          setSensorID(res.data[0].moistureSensorId);
-          qlDoAmService.layThongSoDoAm(res.data[0].moistureSensorId).then(res => {
+          setSensorID(res.data[0].id);
+          qlDoAmService.layThongSoDoAm(res.data[0].id).then(res => {
             setHumidity(res.data.moisture);
             setTime(res.data.updatedAt)
             setFlag(!flag);
@@ -38,8 +38,8 @@ export default function Homepage() {
           console.log(error.response);
         });
         qlDoAmService.layDanhSachMayBom(farms[currentFarm].id).then(res => {
-          setPumpID(res.data[0].pumpId);
-          qlDoAmService.layThongSoMayBom(res.data[0].pumpId).then(res => {
+          setPumpID(res.data[0].id);
+          qlDoAmService.layThongSoMayBom(res.data[0].id).then(res => {
               let curPumpInfo = {
                 status: res.data.status, 
                 intensity: res.data.intensity
