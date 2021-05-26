@@ -5,7 +5,6 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { NavLink } from "react-router-dom";
-// import Modal from "react-modal";
 // npm install react-bootstrap bootstrap
 
 export default class MyComponent extends React.Component {
@@ -19,7 +18,8 @@ export default class MyComponent extends React.Component {
       showModalAdd: false,
       showModalDelete: false,
       method: "",
-      farms: [],
+      activeFarms: [],
+      notActiveFarms: [],
       form: { id: 0, name: "", location: "" },
     };
   }
@@ -87,6 +87,40 @@ export default class MyComponent extends React.Component {
     return response2;
   }
 
+  async putData2(url = "", data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: "PUT", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    });
+
+    try {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch {
+      alert(
+        "Nông trại không tồn tại hoặc nông trại không thể hoạt động trở lại!"
+      );
+      return response;
+    }
+
+    const response2 = await response.json(); // parses JSON response into native JavaScript objects
+
+    alert("Nông trại đã hoạt động trở lại!");
+
+    return response2;
+  }
+
   async deleteData(url = "") {
     // Default options are marked with *
     const response = await fetch(url, {
@@ -103,34 +137,57 @@ export default class MyComponent extends React.Component {
       // body: JSON.stringify(data), // body data type must match "Content-Type" header
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    try {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch {
+      alert("Không thể ngừng hoạt động nông trại đang có thiết bị!");
+      return response;
     }
 
     const response2 = await response.json(); // parses JSON response into native JavaScript objects
 
-    alert("Xoá nông trại thành công!");
+    alert("Ngừng hoạt động nông trại thành công!");
 
     return response2;
   }
 
   componentDidMount() {
-    this.intervalId = setInterval(() => {
-      this.fetchJSON("http://localhost:8080/api/farms")
+    this.interval = setInterval(() => {
+      this.fetchJSON("http://localhost:8080/api/farms?active=1")
         .then((data) => {
+          console.log("activeFarms = " + data);
           this.setState({
-            // ...this.state,
+            ...this.state,
             isLoaded: true,
-            farms: data,
+            activeFarms: data,
           });
         })
         .catch((e) => {
           console.log(e);
           this.setState({
-            // ...this.state,
+            ...this.state,
             isLoaded: true,
-            // error: e,
-            e,
+            error: e,
+          });
+        });
+
+      this.fetchJSON("http://localhost:8080/api/farms?active=0")
+        .then((data) => {
+          console.log("notActiveFarms = " + data);
+          this.setState({
+            ...this.state,
+            isLoaded: true,
+            notActiveFarms: data,
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          this.setState({
+            ...this.state,
+            isLoaded: true,
+            error: e,
           });
         });
     }, 2000);
@@ -142,7 +199,7 @@ export default class MyComponent extends React.Component {
   }
 
   render() {
-    const { error, isLoaded, farms } = this.state;
+    const { error, isLoaded, activeFarms, notActiveFarms } = this.state;
 
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -166,6 +223,7 @@ export default class MyComponent extends React.Component {
             Thêm nông trại
           </Button>
 
+          {/* Add or update modal */}
           <Modal
             show={this.state.showModalAdd}
             onHide={() => this.setState({ ...this.state, showModalAdd: false })}
@@ -238,6 +296,7 @@ export default class MyComponent extends React.Component {
             </Modal.Footer>
           </Modal>
 
+          {/* Delete modal */}
           <Modal
             show={this.state.showModalDelete}
             onHide={() =>
@@ -247,7 +306,7 @@ export default class MyComponent extends React.Component {
             <Modal.Header closeButton>
               <Modal.Title>Xoá nông trại</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Bạn có chắc chắn muốn xoá nông trại này?</Modal.Body>
+            <Modal.Body>Bạn có chắc chắn muốn ngừng hoạt động nông trại này?</Modal.Body>
             <Modal.Footer>
               <Button
                 onClick={(e) => {
@@ -272,6 +331,7 @@ export default class MyComponent extends React.Component {
             </Modal.Footer>
           </Modal>
 
+          <h4>Nông trại đang hoạt động</h4>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -282,7 +342,7 @@ export default class MyComponent extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {farms.map((farm) => (
+              {activeFarms.map((farm) => (
                 <tr key={farm.id}>
                   <td>{farm.id}</td>
                   <td>{farm.name}</td>
@@ -318,9 +378,69 @@ export default class MyComponent extends React.Component {
                         });
                       }}
                     >
-                      Xoá
+                      Ngừng hoạt động
                     </Button>
                     <Button className="me-3" variant="outline-dark">
+                      <NavLink to={"/admin/quanlynongtrai/" + farm.id}>
+                        Xem thiết bị trong nông trại
+                      </NavLink>
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+
+          <h4 className="mt-5">Nông trại ngừng hoạt động</h4>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>ID nông trại</th>
+                <th>Tên nông trại</th>
+                <th>Vị trí địa lý</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              {notActiveFarms.map((farm) => (
+                <tr key={farm.id}>
+                  <td>{farm.id}</td>
+                  <td>{farm.name}</td>
+                  <td>{farm.location}</td>
+                  <td>
+                    <Button
+                      className="me-3"
+                      variant="warning"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        this.setState({
+                          ...this.state,
+                          showModalAdd: true,
+                          method: "PUT",
+                          form: {
+                            ...this.state.form,
+                            id: farm.id,
+                          },
+                        });
+                      }}
+                    >
+                      Cập nhật
+                    </Button>
+                    <Button
+                      className="me-3"
+                      variant="danger"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        this.putData2("http://localhost:8080/api/farms/" + farm.id.toString() + "/active", {});
+                      }}
+                    >
+                      Hoạt động trở lại
+                    </Button>
+                    <Button
+                      className="me-3"
+                      variant="outline-dark"
+                      style={{ visibility: "hidden" }}
+                    >
                       <NavLink to={"/admin/quanlynongtrai/" + farm.id}>
                         Xem thiết bị trong nông trại
                       </NavLink>
