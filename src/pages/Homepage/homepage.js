@@ -69,7 +69,7 @@ export default function Homepage() {
         }).catch(error => {
           console.log(error.response.data);
         });
-        }, 3000);
+        }, 2000);
       }
       
     }
