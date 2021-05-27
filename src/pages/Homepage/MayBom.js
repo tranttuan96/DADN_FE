@@ -15,7 +15,8 @@ export default function MayBom() {
     let [pumpID, setPumpID] = useState(1);
 
     let [pumpstatus,setPumpStatus] = useState()
-    let [intensity,setIntensity] = useState(100);
+    //let [intensity,setIntensity] = useState();
+    //let [intensityValue,setIntensityValue] = useState();
     let [upperThreshold,setUpperThreshold] = useState();
     let [lowerThreshold,setLowerThreshold] = useState();
     let [upper,setUpper] = useState();
@@ -35,6 +36,7 @@ export default function MayBom() {
             });
             pumpControllService.getPumpStatus(pumpID).then(res =>{
                 setPumpStatus(res.data.status);
+                //setIntensity(res.data.intensity);
             }).catch(error => {
                 console.log(error.response);
             });
@@ -47,17 +49,7 @@ export default function MayBom() {
             }, 3000);
         }        
     );
-/*
-    useEffect(() =>{
-        setTimeout(() => {
-            pumpControllService.getPumpStatus(pumpID).then(res =>{
-                setPumpStatus(res.data.status);
-            }).catch(error => {
-                console.log(error.response);
-            });
-        }, 1000);
-    });
-*/
+
     const handleCloseThreshold = () => setShowThreshold(false);
     const handleShowThreshold = () => setShowThreshold(true);
     const handleCloseTurnOn = () => setShowTurnOn(false);
@@ -65,14 +57,16 @@ export default function MayBom() {
     const handleCloseTurnOff = () => setShowTurnOff(false);
     const handleShowTurnOff = () => setShowTurnOff(true);
 
+    /*
     const handleIntensity = (event) =>{
-        setIntensity(event.target.value);
+        setIntensityValue(event.target.value);
     }
 
     const saveIntensity = (event) => {
         event.preventDefault();
         alert("intensity saved");
     }
+    */
 
     const handleUpperThreshold = (event) =>{
         setUpperThreshold(event.target.value);
@@ -138,9 +132,6 @@ export default function MayBom() {
                         <td>Trạng thái</td><td>{pumpstatus}</td>
                     </tr>
                     <tr>
-                        <td>Cường độ</td><td>{intensity}</td>
-                    </tr>
-                    <tr>
                         <td>Ngưỡng trên</td><td>{upper}</td>
                     </tr>
                     <tr>
@@ -151,14 +142,6 @@ export default function MayBom() {
                     </tr>
                 </tbody>
             </table>
-
-            <form className="intensity" onSubmit={saveIntensity}>
-                <div>
-                    <label className="intensitylabel">Cường độ:</label>
-                    <input name="intensity" type="text" className="intensityinput" onChange={handleIntensity}/>
-                    <button className="intensitybutton">SAVE</button>
-                </div>
-            </form>
 
             <div className="toggle">
                 <label className="togglelabel">Điều khiển máy bơm thủ công</label>
@@ -245,3 +228,13 @@ export default function MayBom() {
         </div>
     )
 }
+
+            /*
+            <form className="intensity" onSubmit={saveIntensity}>
+                <div>
+                    <label className="intensitylabel">Cường độ:</label>
+                    <input name="intensity" type="text" className="intensityinput" value={intensityValue} onChange={handleIntensity}/>
+                    <button className="intensitybutton">SAVE</button>
+                </div>
+            </form>
+            */
