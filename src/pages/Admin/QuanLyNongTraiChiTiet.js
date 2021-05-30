@@ -28,8 +28,8 @@ export default class MyComponent extends React.Component {
       farm: {},
       moistureSensors: [],
       pumps: [],
-      formMoistureSensor: { id: 0, moistureSensorId: "", name: "" },
-      formPump: { id: 0, pumpId: "", name: "" },
+      formMoistureSensor: { id: "", name: "" },
+      formPump: { id: "", name: "" },
       deviceType: "",
     };
   }
@@ -265,7 +265,6 @@ export default class MyComponent extends React.Component {
               this.setState({
                 ...this.state,
                 showModalAdd: true,
-                formMoistureSensor: { ...this.state.formMoistureSensor, id: 0 },
                 deviceType: "moistureSensor",
               })
             }
@@ -317,7 +316,7 @@ export default class MyComponent extends React.Component {
                           ...this.state,
                           formMoistureSensor: {
                             ...this.state.formMoistureSensor,
-                            moistureSensorId: e.target.value,
+                            id: e.target.value,
                           },
                         });
                       } else if (this.state.deviceType == "pump") {
@@ -325,7 +324,7 @@ export default class MyComponent extends React.Component {
                           ...this.state,
                           formPump: {
                             ...this.state.formPump,
-                            pumpId: e.target.value,
+                            id: e.target.value,
                           },
                         });
                       }
@@ -445,7 +444,7 @@ export default class MyComponent extends React.Component {
                           ...this.state,
                           formMoistureSensor: {
                             ...this.state.formMoistureSensor,
-                            moistureSensorId: e.target.value,
+                            id: e.target.value,
                           },
                         });
                       } else if (this.state.deviceType == "pump") {
@@ -453,7 +452,7 @@ export default class MyComponent extends React.Component {
                           ...this.state,
                           formPump: {
                             ...this.state.formPump,
-                            pumpId: e.target.value,
+                            id: e.target.value,
                           },
                         });
                       }
@@ -579,7 +578,7 @@ export default class MyComponent extends React.Component {
             <tbody>
               {moistureSensorsJSON.map((moistureSensor) => (
                 <tr key={moistureSensor.id}>
-                  <td>{moistureSensor.moistureSensorId}</td>
+                  <td>{moistureSensor.id}</td>
                   <td>{moistureSensor.name}</td>
                   <td>
                     <Button
@@ -631,7 +630,6 @@ export default class MyComponent extends React.Component {
               this.setState({
                 ...this.state,
                 showModalAdd: true,
-                formPump: { ...this.state.formPump, id: 0 },
                 deviceType: "pump",
               })
             }
@@ -651,7 +649,7 @@ export default class MyComponent extends React.Component {
             <tbody>
               {pumpsJSON.map((pump) => (
                 <tr key={pump.id}>
-                  <td>{pump.pumpId}</td>
+                  <td>{pump.id}</td>
                   <td>{pump.name}</td>
                   <td>
                     <Button

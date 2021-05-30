@@ -70,7 +70,7 @@ export default function Homepage() {
         }).catch(error => {
           console.log(error.response.data);
         });
-        }, 10000);
+        }, 5000);
       }
       
     }

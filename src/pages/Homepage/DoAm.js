@@ -77,7 +77,7 @@ class DoAm extends Component {
     labels_year= ['2015', '2016', '2017', '2018', '2019', '2020'];
     
     componentDidMount() {
-        const fetchdata = () => {fetch('http://localhost:8080/api/1/moistureInfo')
+        const fetchdata = () => {fetch('http://localhost:8080/api/9/moistureInfo')
           .then(res => res.json())
           .then(json => {
             // console.log("Data laaa: "); console.log(json.moistureSensor.moistureInfoes[1]);

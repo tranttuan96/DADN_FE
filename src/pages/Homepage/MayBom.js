@@ -11,8 +11,8 @@ import axios from "axios"
 export default function MayBom() {
 
     //let [currentFarm, setCurrentFarm] = useState("");
-    let [sensorID, setSensorID] = useState(1);
-    let [pumpID, setPumpID] = useState(1);
+    let [sensorID, setSensorID] = useState(9);
+    let [pumpID, setPumpID] = useState(11);
 
     let [pumpstatus,setPumpStatus] = useState()
     //let [intensity,setIntensity] = useState();
