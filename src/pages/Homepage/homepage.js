@@ -8,6 +8,7 @@ export default function Homepage() {
   let [farms, setFarms] = useState([]);
   let [currentFarm, setCurrentFarm] = useState();
   let [sensorID, setSensorID] = useState("");
+
   let [pumpID, setPumpID] = useState("");
 
   let [time, setTime] = useState();
@@ -25,20 +26,20 @@ export default function Homepage() {
     if (!firstAccess) {
       if(sensorID === "") {
         qlDoAmService.layDanhSachSensor(farms[currentFarm].id).then(res => {
-          setSensorID(res.data[0].moistureSensorId);
-          qlDoAmService.layThongSoDoAm(res.data[0].moistureSensorId).then(res => {
+          setSensorID(res.data[0].id);
+          qlDoAmService.layThongSoDoAm(res.data[0].id).then(res => {
             setHumidity(res.data.moisture);
             setTime(res.data.updatedAt)
             setFlag(!flag);
           }).catch(error => {
-            console.log(error.response.data);
+            console.log(error.response);
           });
         }).catch(error => {
-          console.log(error.response.data);
+          console.log(error.response);
         });
         qlDoAmService.layDanhSachMayBom(farms[currentFarm].id).then(res => {
-          setPumpID(res.data[0].pumpId);
-          qlDoAmService.layThongSoMayBom(res.data[0].pumpId).then(res => {
+          setPumpID(res.data[0].id);
+          qlDoAmService.layThongSoMayBom(res.data[0].id).then(res => {
               let curPumpInfo = {
                 status: res.data.status, 
                 intensity: res.data.intensity
@@ -58,7 +59,7 @@ export default function Homepage() {
             setTime(res.data.updatedAt)
             setFlag(!flag);
           }).catch(error => {
-            console.log(error.response.data);
+            console.log(error.response);
           });
           qlDoAmService.layThongSoMayBom(pumpID).then(res => {
             let curPumpInfo = {
@@ -69,7 +70,7 @@ export default function Homepage() {
         }).catch(error => {
           console.log(error.response.data);
         });
-        }, 2000);
+        }, 5000);
       }
       
     }

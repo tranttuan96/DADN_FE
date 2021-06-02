@@ -11,62 +11,62 @@ import axios from "axios"
 export default function MayBom() {
 
     //let [currentFarm, setCurrentFarm] = useState("");
-    let [sensorID, setSensorID] = useState(1);
-    let [pumpID, setPumpID] = useState(1);
+    let [sensorID, setSensorID] = useState(9);
+    let [pumpID, setPumpID] = useState(11);
 
     let [pumpstatus,setPumpStatus] = useState()
-    let [intensity,setIntensity] = useState(100);
+    //let [intensity,setIntensity] = useState();
+    //let [intensityValue,setIntensityValue] = useState();
     let [upperThreshold,setUpperThreshold] = useState();
     let [lowerThreshold,setLowerThreshold] = useState();
     let [upper,setUpper] = useState();
     let [lower,setLower] = useState();
     let [humidity, setHumidity] = useState();
     let [toggle,setToggle] = useState(false);
-    const [show, setShow] = useState(false);
+    let [showThreshold, setShowThreshold] = useState(false);
+    let [showTurnOn, setShowTurnOn] = useState(false);
+    let [showTurnOff, setShowTurnOff] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
             qlDoAmService.layThongSoDoAm(sensorID).then(res => {
                 setHumidity(res.data.moisture);
             }).catch(error => {
-                console.log(error.response.data);
+                console.log(error.response);
             });
             pumpControllService.getPumpStatus(pumpID).then(res =>{
                 setPumpStatus(res.data.status);
+                //setIntensity(res.data.intensity);
             }).catch(error => {
-                console.log(error.response.data);
+                console.log(error.response);
             });
             ThresholdService.getCurrentThreshold(sensorID).then(res =>{
                 setLower(res.data.lower)
                 setUpper(res.data.upper)
             }).catch(error => {
-                console.log(error.response.data);
+                console.log(error.response);
             });
             }, 3000);
         }        
     );
-/*
-    useEffect(() =>{
-        setTimeout(() => {
-            pumpControllService.getPumpStatus(pumpID).then(res =>{
-                setPumpStatus(res.data.status);
-            }).catch(error => {
-                console.log(error.response);
-            });
-        }, 1000);
-    });
-*/
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
+    const handleCloseThreshold = () => setShowThreshold(false);
+    const handleShowThreshold = () => setShowThreshold(true);
+    const handleCloseTurnOn = () => setShowTurnOn(false);
+    const handleShowTurnOn = () => setShowTurnOn(true);
+    const handleCloseTurnOff = () => setShowTurnOff(false);
+    const handleShowTurnOff = () => setShowTurnOff(true);
+
+    /*
     const handleIntensity = (event) =>{
-        setIntensity(event.target.value);
+        setIntensityValue(event.target.value);
     }
 
     const saveIntensity = (event) => {
         event.preventDefault();
         alert("intensity saved");
     }
+    */
 
     const handleUpperThreshold = (event) =>{
         setUpperThreshold(event.target.value);
@@ -78,15 +78,22 @@ export default function MayBom() {
 
     const saveThreshold = (event) => {
         event.preventDefault();
-        axios.post(`http://localhost:8080/api/threshold/${sensorID}`, {
-            upper: `${upperThreshold}`,
-            lower: `${lowerThreshold}`
-        }).then(res =>{
-            console.log(res.response);
-        }).catch(error => {
-            console.log(error.response);
-        });
-        alert("threshold saved");
+        if(`${upperThreshold}` < `${lowerThreshold}`){
+            alert("Ngưỡng dưới không được cao hơn ngưỡng trên");
+        }
+        else{
+            axios.post(`http://localhost:8080/api/threshold/${sensorID}`, {
+                upper: `${upperThreshold}`,
+                lower: `${lowerThreshold}`
+            }).then(res =>{
+                console.log(res.response);
+            }).catch(error => {
+                console.log(error.response);
+            });
+            setShowThreshold(false);
+            alert("threshold saved");
+        }
+
     }
 
     const toggler = () =>{
@@ -100,6 +107,7 @@ export default function MayBom() {
         }).catch(error => {
             console.log(error);
         });
+        setShowTurnOn(false);
     }
 
     const handleTurnOff = () =>{
@@ -108,6 +116,7 @@ export default function MayBom() {
         }).catch(error => {
             console.log(error);
         });
+        setShowTurnOff(false);
     }
 
     return (
@@ -123,9 +132,6 @@ export default function MayBom() {
                         <td>Trạng thái</td><td>{pumpstatus}</td>
                     </tr>
                     <tr>
-                        <td>Cường độ</td><td>{intensity}</td>
-                    </tr>
-                    <tr>
                         <td>Ngưỡng trên</td><td>{upper}</td>
                     </tr>
                     <tr>
@@ -137,35 +143,69 @@ export default function MayBom() {
                 </tbody>
             </table>
 
-            <form className="intensity" onSubmit={saveIntensity}>
-                <div>
-                    <label className="intensitylabel">Cường độ:</label>
-                    <input name="intensity" type="text" className="intensityinput" onChange={handleIntensity}/>
-                    <button className="intensitybutton">SAVE</button>
-                </div>
-            </form>
-
             <div className="toggle">
                 <label className="togglelabel">Điều khiển máy bơm thủ công</label>
                 <Switch className="togglebutton" onClick={toggler}/>
                 {
                     toggle && (
                         <div className="manual" >
-                            <button className="onbutton" onClick={handleTurnOn}>ON</button>
-                            <button className="offbutton" onClick={handleTurnOff}>OFF</button>
+                            <Button className="onbutton" variant="success" onClick={handleShowTurnOn}>
+                                ON
+                            </Button>
+
+                            <Modal show={showTurnOn} onHide={handleCloseTurnOn}>
+                                <Modal.Header>
+                                    <Modal.Title>Bật máy bơm</Modal.Title>
+
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <p/> <p/>
+                                    Bạn có chắc chắn muốn bật máy bơm?
+                                    <p/> <p/>
+                                    <Button className="yesbutton" variant="primary" onClick={handleTurnOn}>
+                                        Có
+                                    </Button>
+                                    <Button className="nobutton" variant="secondary" onClick={handleCloseTurnOn}>
+                                        Không
+                                    </Button>
+                                </Modal.Body>
+                            </Modal>
+
+                            <Button className="offbutton" variant="danger" onClick={handleShowTurnOff}>
+                                OFF
+                            </Button>
+
+                            <Modal show={showTurnOff} onHide={handleCloseTurnOff}>
+                                <Modal.Header>
+                                    <Modal.Title>Tắt máy bơm</Modal.Title>
+
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <p/> <p/>
+                                    Bạn có chắc chắn muốn tắt máy bơm?
+                                    <p/> <p/>
+                                    <Button className="yesbutton" variant="primary" onClick={handleTurnOff}>
+                                        Có
+                                    </Button>
+                                    <Button className="nobutton" variant="secondary" onClick={handleCloseTurnOff}>
+                                        Không
+                                    </Button>
+                                </Modal.Body>
+                            </Modal>
+
                         </div>
                     )
                 }
             </div>
 
-            <Button className="threshold" variant="primary" onClick={handleShow}>
+            <Button className="threshold" variant="primary" onClick={handleShowThreshold}>
                 Thiết lập ngưỡng độ ẩm
             </Button>
 
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={showThreshold} onHide={handleCloseThreshold}>
                 <Modal.Header>
                     <Modal.Title>Thiết lập ngưỡng độ ẩm</Modal.Title>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleCloseThreshold}>
                         Close
                     </Button>
                 </Modal.Header>
@@ -188,3 +228,13 @@ export default function MayBom() {
         </div>
     )
 }
+
+            /*
+            <form className="intensity" onSubmit={saveIntensity}>
+                <div>
+                    <label className="intensitylabel">Cường độ:</label>
+                    <input name="intensity" type="text" className="intensityinput" value={intensityValue} onChange={handleIntensity}/>
+                    <button className="intensitybutton">SAVE</button>
+                </div>
+            </form>
+            */
