@@ -10,7 +10,9 @@ import {
 } from "react-router-dom";
 import '../../assets/scss/Layout/LichSu.scss'
 import { Row, Col, DatePicker, Space, Radio, Table, Button, icons } from 'antd'
+import { qlDoAmService } from "../../services/quanLyDoAmService"
 const { RangePicker } = DatePicker;
+
 
 export default class LichSu extends React.Component {
 	constructor(props) {
@@ -20,9 +22,32 @@ export default class LichSu extends React.Component {
 			range_picker: "",
 			History_value: "a",
 			Table: false,
-			pump_data: []
+			pump_data: [],
+			firstAccess: true,
+			currentFarm: 0,
+			farms: [],
+			sensorID: "",
+			pumpID: "",
+			threshold: []
 		};
 	}
+
+	componentDidMount = async () => {
+		if (this.state.firstAccess) {
+			await qlDoAmService.layDanhSachNongTrai()
+				.then(res =>  this.setState({farms: res.data}))
+				.catch(error => console.log(error));
+		}
+		if(this.state.sensorID === "") {
+			await qlDoAmService.layDanhSachSensor(this.state.farms[this.state.currentFarm].id)
+				.then(res => this.setState({sensorID: res.data[0].id}))
+				.catch(error => console.log(error));
+
+			await qlDoAmService.layDanhSachMayBom(this.state.farms[this.state.currentFarm].id)
+				.then(res => this.setState({pumpID: res.data[0].id}));
+		}
+	}
+
 
 	loadSensorInfo = async () => {
 		if (this.state.History_value == "a") {
@@ -31,6 +56,7 @@ export default class LichSu extends React.Component {
 				console.log(url)
 				let response = await fetch(url)
 				let result = await response.json()
+				console.log(result)
 				this.setState({data: result})
 				this.setState({Table: true})
 			} catch (err) {
@@ -38,13 +64,26 @@ export default class LichSu extends React.Component {
 				alert("Không có dữ liệu được hiển thị. Hãy xem lại thông tin")
 			}
 		}
-		else {
+		else if (this.state.History_value == "b") {
 			try {
 				let url = 'http://localhost:8080/api/pumpInfo/time?' + this.state.range_picker
 				console.log(url)
 				let response = await fetch(url)
 				let result = await response.json()
 				this.setState({pump_data: result})
+				this.setState({Table: true})
+			} catch (err) {
+				console.log('error')
+				alert("Không có dữ liệu được hiển thị. Hãy xem lại thông tin")
+			}
+		}
+		else if (this.state.History_value == "c") {
+			try {
+				let url = 'http://localhost:8080/api/threshold/time?' + this.state.range_picker
+				console.log(url)
+				let response = await fetch(url)
+				let result = await response.json()
+				this.setState({threshold: result})
 				this.setState({Table: true})
 			} catch (err) {
 				console.log('error')
@@ -74,50 +113,57 @@ export default class LichSu extends React.Component {
 	    this.setState({range_picker: range_picker})
 	}
 
+	handleChangeSelectFarm = async (event) => {
+		let { value } = event.target;
+		await this.setState({currentFarm: value});
+	}
+
+	chooseFirstTime = async () => {
+		await this.setState({firstAccess: false});
+	}
+
 	render() {
-		if (this.state.Table == false) {
-			return ( 
-		    	<div className="wrapper">
-		    		<Row className="with-80">
-				     	<Col span={24}>
-				     		<h1 className="header">Lựa chọn thông tin cần xem</h1>
-				     	</Col>
-				    </Row>
-				    <Row className="with-80">
-				     	<Col span={24}>
-				     		<h2 className="header">Thời gian hiển thị</h2>
-				     	</Col>
-				    </Row>
-				    <Row className="with-80">
-				     	<Col span={24}>
-				     		<Space direction="vertical" size={12}>
-							    <RangePicker renderExtraFooter={() => 'extra footer'} showTime format="DD/MM/YYYY HH:mm:ss" onChange={this.handleChangeDebut}/>
-							</Space>
-				     	</Col>
-				    </Row>
-				    <Row className="with-80">
-				     	<Col span={24}>
-				     		<h2 className="header">Lựa chọn kiểu dữ liệu lịch sử</h2>
-				     	</Col>
-				    </Row>
-				    <Row>
-				     	<Col span={24}>
-				     		<Radio.Group defaultValue="a" size="large" buttonStyle="solid">
-								<Radio.Button value="a" onClick={() => {this.setState({History_value: "a"})}}>Lịch sử dữ liệu từ sensor</Radio.Button>
-								<Radio.Button value="b" onClick={() => {this.setState({History_value: "b"})}}>Lịch sử điều khiển</Radio.Button>
-								<Radio.Button value="c" disabled>Lịch sử dữ liệu từ máy bơm</Radio.Button>
-							</Radio.Group>
-				     	</Col>
-				    </Row>
-			        <Button type="primary" className="Apply-Button" onClick={this.loadSensorInfo} >Xác nhận</Button>
-			        <Button type="primary" className="Cancle-Button" danger>Hủy</Button>
-		        </div>
-		    )
+		if (this.state.firstAccess) {
+			return (
+				<div className="popupFarms">
+
+					<h4>Vui lòng chọn nông trại: </h4>
+					<select
+					className="form-select"
+					name="farm"
+					aria-label="Default select"
+					onChange={this.handleChangeSelectFarm}
+					>
+					<option defaultValue hidden>
+					Lựa chọn nông trại
+					</option>
+					{this.state.farms.map((farm, i) => {
+					return <option key={i} value={i}>{farm.name}</option>;
+					})}
+					</select>
+
+					<div className="confirm">
+						<button className="btn btn-success" onClick={this.chooseFirstTime}>
+						Xác nhận
+						</button>
+					</div>
+				</div>
+			);
 		}
 		else {
-			if (this.state.History_value == "a") {
+
+			if (this.state.Table == false) {
 				return ( 
 			    	<div className="wrapper">
+			    		<div className="chose__farm change__farm">
+							<p>Thay đổi nông trại: </p>
+							<select className="form-select" name="farm" aria-label="Default select" onChange={this.handleChangeSelectFarm}>
+								<option value={this.state.farms[this.state.currentFarm].name} defaultValue hidden>{this.state.farms[this.state.currentFarm].name}</option>
+								{this.state.farms.map((farm, i) => {
+								return <option key={i} value={i}>{farm.name}</option>
+								})}
+							</select>
+						</div>
 			    		<Row className="with-80">
 					     	<Col span={24}>
 					     		<h1 className="header">Lựa chọn thông tin cần xem</h1>
@@ -145,58 +191,166 @@ export default class LichSu extends React.Component {
 					     		<Radio.Group defaultValue="a" size="large" buttonStyle="solid">
 									<Radio.Button value="a" onClick={() => {this.setState({History_value: "a"})}}>Lịch sử dữ liệu từ sensor</Radio.Button>
 									<Radio.Button value="b" onClick={() => {this.setState({History_value: "b"})}}>Lịch sử điều khiển</Radio.Button>
-									<Radio.Button value="c" disabled>Lịch sử dữ liệu từ máy bơm</Radio.Button>
+									<Radio.Button value="c" onClick={() => {this.setState({History_value: "c"})}}>Lịch sử thiết lập ngưỡng</Radio.Button>
 								</Radio.Group>
 					     	</Col>
 					    </Row>
 				        <Button type="primary" className="Apply-Button" onClick={this.loadSensorInfo} >Xác nhận</Button>
 				        <Button type="primary" className="Cancle-Button" danger>Hủy</Button>
-				      	<SensorTable data ={this.state.data} />
 			        </div>
 			    )
 			}
 			else {
-				return ( 
-			    	<div className="wrapper">
-			    		<Row className="with-80">
-					     	<Col span={24}>
-					     		<h1 className="header">Lựa chọn thông tin cần xem</h1>
-					     	</Col>
-					    </Row>
-					    <Row className="with-80">
-					     	<Col span={24}>
-					     		<h2 className="header">Thời gian hiển thị</h2>
-					     	</Col>
-					    </Row>
-					    <Row className="with-80">
-					     	<Col span={24}>
-					     		<Space direction="vertical" size={12}>
-								    <RangePicker renderExtraFooter={() => 'extra footer'} showTime format="DD/MM/YYYY HH:mm:ss" onChange={this.handleChangeDebut}/>
-								</Space>
-					     	</Col>
-					    </Row>
-					    <Row className="with-80">
-					     	<Col span={24}>
-					     		<h2 className="header">Lựa chọn kiểu dữ liệu lịch sử</h2>
-					     	</Col>
-					    </Row>
-					    <Row>
-					     	<Col span={24}>
-					     		<Radio.Group defaultValue="a" size="large" buttonStyle="solid">
-									<Radio.Button value="a" onClick={() => {this.setState({History_value: "a"})}}>Lịch sử dữ liệu từ sensor</Radio.Button>
-									<Radio.Button value="b" onClick={() => {this.setState({History_value: "b"})}}>Lịch sử điều khiển</Radio.Button>
-									<Radio.Button value="c" disabled>Lịch sử dữ liệu từ máy bơm</Radio.Button>
-								</Radio.Group>
-					     	</Col>
-					    </Row>
-				        <Button type="primary" className="Apply-Button" onClick={this.loadSensorInfo} >Xác nhận</Button>
-				        <Button type="primary" className="Cancle-Button" danger>Hủy</Button>
-				      	<PumpTable data ={this.state.pump_data} />
-			        </div>
-			    )
+				if (this.state.History_value == "a") {
+					return ( 
+				    	<div className="wrapper">
+				    		<div className="chose__farm change__farm">
+								<p>Thay đổi nông trại: </p>
+								<select className="form-select" name="farm" aria-label="Default select" onChange={this.handleChangeSelectFarm}>
+									<option value={this.state.farms[this.state.currentFarm].name} defaultValue hidden>{this.state.farms[this.state.currentFarm].name}</option>
+									{this.state.farms.map((farm, i) => {
+									return <option key={i} value={i}>{farm.name}</option>
+									})}
+								</select>
+							</div>
+				    		<Row className="with-80">
+						     	<Col span={24}>
+						     		<h1 className="header">Lựa chọn thông tin cần xem</h1>
+						     	</Col>
+						    </Row>
+						    <Row className="with-80">
+						     	<Col span={24}>
+						     		<h2 className="header">Thời gian hiển thị</h2>
+						     	</Col>
+						    </Row>
+						    <Row className="with-80">
+						     	<Col span={24}>
+						     		<Space direction="vertical" size={12}>
+									    <RangePicker renderExtraFooter={() => 'extra footer'} showTime format="DD/MM/YYYY HH:mm:ss" onChange={this.handleChangeDebut}/>
+									</Space>
+						     	</Col>
+						    </Row>
+						    <Row className="with-80">
+						     	<Col span={24}>
+						     		<h2 className="header">Lựa chọn kiểu dữ liệu lịch sử</h2>
+						     	</Col>
+						    </Row>
+						    <Row>
+						     	<Col span={24}>
+						     		<Radio.Group defaultValue="a" size="large" buttonStyle="solid">
+										<Radio.Button value="a" onClick={() => {this.setState({History_value: "a"})}}>Lịch sử dữ liệu từ sensor</Radio.Button>
+										<Radio.Button value="b" onClick={() => {this.setState({History_value: "b"})}}>Lịch sử điều khiển</Radio.Button>
+										<Radio.Button value="c" onClick={() => {this.setState({History_value: "c"})}}>Lịch sử thiết lập ngưỡng</Radio.Button>
+									</Radio.Group>
+						     	</Col>
+						    </Row>
+					        <Button type="primary" className="Apply-Button" onClick={this.loadSensorInfo} >Xác nhận</Button>
+					        <Button type="primary" className="Cancle-Button" danger>Hủy</Button>
+					      	<SensorTable data ={this.state.data} />
+				        </div>
+				    )
+				}
+				else if (this.state.History_value == "b") {
+					return ( 
+				    	<div className="wrapper">
+				    		<div className="chose__farm change__farm">
+								<p>Thay đổi nông trại: </p>
+								<select className="form-select" name="farm" aria-label="Default select" onChange={this.handleChangeSelectFarm}>
+									<option value={this.state.farms[this.state.currentFarm].name} defaultValue hidden>{this.state.farms[this.state.currentFarm].name}</option>
+									{this.state.farms.map((farm, i) => {
+									return <option key={i} value={i}>{farm.name}</option>
+									})}
+								</select>
+							</div>
+				    		<Row className="with-80">
+						     	<Col span={24}>
+						     		<h1 className="header">Lựa chọn thông tin cần xem</h1>
+						     	</Col>
+						    </Row>
+						    <Row className="with-80">
+						     	<Col span={24}>
+						     		<h2 className="header">Thời gian hiển thị</h2>
+						     	</Col>
+						    </Row>
+						    <Row className="with-80">
+						     	<Col span={24}>
+						     		<Space direction="vertical" size={12}>
+									    <RangePicker renderExtraFooter={() => 'extra footer'} showTime format="DD/MM/YYYY HH:mm:ss" onChange={this.handleChangeDebut}/>
+									</Space>
+						     	</Col>
+						    </Row>
+						    <Row className="with-80">
+						     	<Col span={24}>
+						     		<h2 className="header">Lựa chọn kiểu dữ liệu lịch sử</h2>
+						     	</Col>
+						    </Row>
+						    <Row>
+						     	<Col span={24}>
+						     		<Radio.Group defaultValue="a" size="large" buttonStyle="solid">
+										<Radio.Button value="a" onClick={() => {this.setState({History_value: "a"})}}>Lịch sử dữ liệu từ sensor</Radio.Button>
+										<Radio.Button value="b" onClick={() => {this.setState({History_value: "b"})}}>Lịch sử điều khiển</Radio.Button>
+										<Radio.Button value="c" onClick={() => {this.setState({History_value: "c"})}}>Lịch sử thiết lập ngưỡng</Radio.Button>
+									</Radio.Group>
+						     	</Col>
+						    </Row>
+					        <Button type="primary" className="Apply-Button" onClick={this.loadSensorInfo} >Xác nhận</Button>
+					        <Button type="primary" className="Cancle-Button" danger>Hủy</Button>
+					      	<PumpTable data ={this.state.pump_data} />
+				        </div>
+				    )
+				}
+				else if (this.state.History_value == "c") {
+					return ( 
+				    	<div className="wrapper">
+				    		<div className="chose__farm change__farm">
+								<p>Thay đổi nông trại: </p>
+								<select className="form-select" name="farm" aria-label="Default select" onChange={this.handleChangeSelectFarm}>
+									<option value={this.state.farms[this.state.currentFarm].name} defaultValue hidden>{this.state.farms[this.state.currentFarm].name}</option>
+									{this.state.farms.map((farm, i) => {
+									return <option key={i} value={i}>{farm.name}</option>
+									})}
+								</select>
+							</div>
+				    		<Row className="with-80">
+						     	<Col span={24}>
+						     		<h1 className="header">Lựa chọn thông tin cần xem</h1>
+						     	</Col>
+						    </Row>
+						    <Row className="with-80">
+						     	<Col span={24}>
+						     		<h2 className="header">Thời gian hiển thị</h2>
+						     	</Col>
+						    </Row>
+						    <Row className="with-80">
+						     	<Col span={24}>
+						     		<Space direction="vertical" size={12}>
+									    <RangePicker renderExtraFooter={() => 'extra footer'} showTime format="DD/MM/YYYY HH:mm:ss" onChange={this.handleChangeDebut}/>
+									</Space>
+						     	</Col>
+						    </Row>
+						    <Row className="with-80">
+						     	<Col span={24}>
+						     		<h2 className="header">Lựa chọn kiểu dữ liệu lịch sử</h2>
+						     	</Col>
+						    </Row>
+						    <Row>
+						     	<Col span={24}>
+						     		<Radio.Group defaultValue="a" size="large" buttonStyle="solid">
+										<Radio.Button value="a" onClick={() => {this.setState({History_value: "a"})}}>Lịch sử dữ liệu từ sensor</Radio.Button>
+										<Radio.Button value="b" onClick={() => {this.setState({History_value: "b"})}}>Lịch sử điều khiển</Radio.Button>
+										<Radio.Button value="c" onClick={() => {this.setState({History_value: "c"})}}>Lịch sử thiết lập ngưỡng</Radio.Button>
+									</Radio.Group>
+						     	</Col>
+						    </Row>
+					        <Button type="primary" className="Apply-Button" onClick={this.loadSensorInfo} >Xác nhận</Button>
+					        <Button type="primary" className="Cancle-Button" danger>Hủy</Button>
+					      	<ThresholdTable data ={this.state.threshold} />
+				        </div>
+				    )
+				}
 			}
 		}
-	};
+	}
 }
 
 const columns_sensor = [
@@ -215,7 +369,7 @@ const columns_sensor = [
 			compare: (a, b) => a.moisture - b.moisture,
 			multiple: 1,
 		},
-	}
+	},
 ];
 
 class SensorTable extends Component {
@@ -226,7 +380,7 @@ class SensorTable extends Component {
 
 	render() {
 		return (
-			<Table className="table-with" columns={columns_sensor} dataSource={this.props.data} rowKey="id" onChange={this.onChange} bordered="true" />
+			<Table className="table-with" columns={columns_sensor} dataSource={this.props.data}  rowKey="id" onChange={this.onChange} bordered="true" />
 		)
 	}
 }
@@ -267,6 +421,33 @@ class PumpTable extends Component {
 	render() {
 		return (
 			<Table className="table-with" columns={columns_pump} dataSource={this.props.data} rowKey="id" onChange={this.onChange} bordered="true" />
+		)
+	}
+}
+
+const columns_threshold = [
+	{
+		title: 'ID',
+		dataIndex: 'id',
+	},
+	{
+		title: 'Thời gian cập nhật',
+		dataIndex: 'updatedAt',
+	},
+	{
+		title: 'Ngưỡng dưới',
+		dataIndex: 'lower',
+	},
+	{
+		title: 'Ngưỡng trên',
+		dataIndex: 'upper',
+	},
+];
+
+class ThresholdTable extends Component {
+	render() {
+		return (
+			<Table className="table-with" columns={columns_threshold} dataSource={this.props.data} rowKey="id" onChange={this.onChange} bordered="true" />
 		)
 	}
 }
