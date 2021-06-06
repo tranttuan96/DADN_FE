@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {userLogin} from '../../setting/config'
+import { qlNguoiDungService } from "../../services/quanLyNguoiDungService"
 import '../../assets/scss/Layout/login.scss'
 
 
@@ -18,8 +19,8 @@ export default function Login(props) {
 
     let [state, setState] = useState({
         values: {
-            taiKhoan: '',
-            matKhau: '',
+            username: '',
+            password: '',
         }
     });
 
@@ -35,21 +36,41 @@ export default function Login(props) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        let index = accounts.findIndex(account => state.values.taiKhoan === account.taiKhoan && state.values.matKhau == account.matKhau)
-        if(index != -1) {
-            localStorage.setItem(userLogin, JSON.stringify(state.values.taiKhoan))
-            alert("login success");
-            if(accounts[index].loaiNguoiDung == "user") {
-                props.history.push('/')
+        let {values } = state;
+        console.log(values)
+        qlNguoiDungService.dangNhap(values).then(res => {
+            console.log(res.data)
+            if(!res.data) {
+                alert("wrong info");
             }
             else {
-                props.history.push('/admin/canhbaomayhu')
+                localStorage.setItem(userLogin, JSON.stringify(res.data))
+                alert("login success");
+                if(res.data.type === "nguoiDung") {
+                    props.history.push('/')
+                }
+                else {
+                    props.history.push('/admin/canhbaomayhu')
+                }
             }
             
-        }
-        else {
-            alert("wrong info");
-        }
+        }).catch(error => {
+            console.log(error.response);
+        });
+        // if(index != -1) {
+        //     localStorage.setItem(userLogin, JSON.stringify(state.values.taiKhoan))
+        //     alert("login success");
+        //     if(accounts[index].loaiNguoiDung == "user") {
+        //         props.history.push('/')
+        //     }
+        //     else {
+        //         props.history.push('/admin/canhbaomayhu')
+        //     }
+            
+        // }
+        // else {
+        //     alert("wrong info");
+        // }
     }
 
     return (
@@ -57,11 +78,11 @@ export default function Login(props) {
             <header>Welcome Back</header>
             <form onSubmit={handleSubmit}>
                 <div className="input-field">
-                    <input name="taiKhoan" type="text" required onChange={handleChange}/>
+                    <input name="username" type="text" required onChange={handleChange}/>
                     <label>Email or Username</label>
                 </div>
                 <div className="input-field">
-                    <input name="matKhau" className="pswrd" type="password" required onChange={handleChange}/>
+                    <input name="password" className="pswrd" type="password" required onChange={handleChange}/>
                     <span className="show">SHOW</span>
                     <label>Password</label>
                 </div>

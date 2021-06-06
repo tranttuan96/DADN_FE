@@ -18,7 +18,7 @@ export default function ShowLogin(props) {
                 <img className="avatar" src={"images/avatar-login.jpg"}></img>
                 <div className="dropdown daDangNhap">
                     <div className="btn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <NavLink className="nav-link" to="/">{taiKhoan}</NavLink>
+                        <NavLink className="nav-link" to="/">{taiKhoan.username}</NavLink>
                     </div>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <NavLink className="dropdown-item" to="/login" onClick={() => { dangXuat() }}>
