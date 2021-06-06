@@ -15,6 +15,7 @@ const AdminLayout = (props) => {
     let [navActive, setNavActive] = useState({
         canhBaoMayHu: true,
         quanLyNongTrai: false,
+        quanLyNguoiDung: false,
     })
 
     const dangXuat = () => {
@@ -28,12 +29,21 @@ const AdminLayout = (props) => {
             let temp = { ...navActive };
             temp.canhBaoMayHu = true;
             temp.quanLyNongTrai = false;
+            temp.quanLyNguoiDung = false;
             setNavActive(temp);
         }
         else if (name === "quanLyNongTrai") {
             let temp = { ...navActive };
             temp.canhBaoMayHu = false;
             temp.quanLyNongTrai = true;
+            temp.quanLyNguoiDung = false;
+            setNavActive(temp);
+        }
+        else if (name === "quanLyNguoiDung") {
+            let temp = { ...navActive };
+            temp.canhBaoMayHu = false;
+            temp.quanLyNongTrai = false;
+            temp.quanLyNguoiDung = true;
             setNavActive(temp);
         }
     }
@@ -44,7 +54,7 @@ const AdminLayout = (props) => {
                 <li className="nav-item">
                     <NavLink className="nav-link" to="/">
                         <img className="avatar" src={"/images/avatar-login.jpg"}></img>
-                        {taiKhoan}
+                        {taiKhoan.username}
                     </NavLink>
                 </li>
                 <li className={`nav-item ${navActive.canhBaoMayHu ? 'isActive' : ''}`}>
@@ -52,6 +62,9 @@ const AdminLayout = (props) => {
                 </li>
                 <li className={`nav-item ${navActive.quanLyNongTrai ? 'isActive' : ''}`}>
                     <NavLink className="nav-link" to="/admin/quanlynongtrai" onClick={() => { updateNavActive("quanLyNongTrai") }}>Quản lý nông trại</NavLink>
+                </li>
+                <li className={`nav-item ${navActive.quanLyNguoiDung ? 'isActive' : ''}`}>
+                    <NavLink className="nav-link" to="/admin/quanlynongtrai" onClick={() => { updateNavActive("quanLyNguoiDung") }}>Quản lý người dùng</NavLink>
                 </li>
                 <li className="nav-item ">
                     <NavLink className="nav-link" to="/login" onClick={() => { dangXuat() }}>
@@ -78,6 +91,9 @@ const AdminLayout = (props) => {
                                 </li>
                                 <li className={`nav-item ${navActive.quanLyNongTrai ? 'isActive' : ''}`}>
                                     <NavLink className="nav-link " to="/admin/quanlynongtrai" onClick={() => { updateNavActive("quanLyNongTrai") }}>Quản lý nông trại</NavLink>
+                                </li>
+                                <li className={`nav-item ${navActive.quanLyNguoiDung ? 'isActive' : ''}`}>
+                                    <NavLink className="nav-link " to="/admin/quanlynguoidung" onClick={() => { updateNavActive("quanLyNguoiDung") }}>Quản lý người dùng</NavLink>
                                 </li>
                             </ul>
                         </div>
