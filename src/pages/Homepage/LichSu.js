@@ -70,6 +70,7 @@ export default class LichSu extends React.Component {
 				console.log(url)
 				let response = await fetch(url)
 				let result = await response.json()
+				console.log(result)
 				this.setState({pump_data: result})
 				this.setState({Table: true})
 			} catch (err) {
@@ -83,6 +84,7 @@ export default class LichSu extends React.Component {
 				console.log(url)
 				let response = await fetch(url)
 				let result = await response.json()
+				console.log(result)
 				this.setState({threshold: result})
 				this.setState({Table: true})
 			} catch (err) {
@@ -246,7 +248,7 @@ export default class LichSu extends React.Component {
 						    </Row>
 					        <Button type="primary" className="Apply-Button" onClick={this.loadSensorInfo} >Xác nhận</Button>
 					        <Button type="primary" className="Cancle-Button" danger>Hủy</Button>
-					      	<SensorTable data ={this.state.data} />
+					      	<SensorTable data ={this.state.data}/>
 				        </div>
 				    )
 				}
@@ -370,6 +372,10 @@ const columns_sensor = [
 			multiple: 1,
 		},
 	},
+	{
+		title: 'Sensor ID',
+		dataIndex: 'sensor_ID',
+	},
 ];
 
 class SensorTable extends Component {
@@ -384,6 +390,8 @@ class SensorTable extends Component {
 		)
 	}
 }
+
+
 
 const columns_pump = [
 	{
@@ -409,7 +417,11 @@ const columns_pump = [
 	{
 		title: 'Trạng thái điều khiển',
 		dataIndex: 'status',
-	}
+	},
+	{
+		title: 'Pump ID',
+		dataIndex: 'farm_pump_id',
+	},
 ];
 
 class PumpTable extends Component {
