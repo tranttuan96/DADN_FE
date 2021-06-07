@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from 'react'
-
+import { useSelector, useDispatch } from 'react-redux'
 import "../../assets/scss/Layout/homepage.scss"
 import { qlDoAmService } from "../../services/quanLyDoAmService"
+import { qlNguoiDungService } from "../../services/quanLyNguoiDungService"
+import { setListFarms, setCurrentFarmIndex } from "../../redux/actions/UserFarmAction"
 
 export default function Homepage() {
 
+  const thongTinUserFarm = useSelector((state) => state.UserFarmReducer);
+  // console.log(thongTinUserFarm)
+  const dispatch = useDispatch();
+  const taiKhoan = JSON.parse(localStorage.getItem('userLogin'))
   let [farms, setFarms] = useState([]);
   let [currentFarm, setCurrentFarm] = useState();
+  let [changeFarm, setChangeFarm] = useState(false);
   let [sensorID, setSensorID] = useState("");
-
   let [pumpID, setPumpID] = useState("");
-
   let [time, setTime] = useState();
   let [humidity, setHumidity] = useState();
-  let [pumpInfo, setPumpInfo] = useState({
-    status: "OFF", 
-    intensity: ""
-  })
+  let [pumpStatus, setPumpStatus] = useState()
 
   let [flag, setFlag] = useState(true);
 
-  let [firstAccess, setFirstAccess] = useState(true);
-
   useEffect(() => {
-    if (!firstAccess) {
-      if(sensorID === "") {
-        qlDoAmService.layDanhSachSensor(farms[currentFarm].id).then(res => {
+    if (thongTinUserFarm.listFarm.length !== 0 && thongTinUserFarm.currentFarmIndex !== -1) {
+      if (sensorID === "") {
+        qlDoAmService.layDanhSachSensor(thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id).then(res => {
           setSensorID(res.data[0].id);
           qlDoAmService.layThongSoDoAm(res.data[0].id).then(res => {
             setHumidity(res.data.moisture);
@@ -37,49 +37,90 @@ export default function Homepage() {
         }).catch(error => {
           console.log(error.response);
         });
-        qlDoAmService.layDanhSachMayBom(farms[currentFarm].id).then(res => {
+        qlDoAmService.layDanhSachMayBom(thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id).then(res => {
           setPumpID(res.data[0].id);
           qlDoAmService.layThongSoMayBom(res.data[0].id).then(res => {
-              let curPumpInfo = {
-                status: res.data.status, 
-                intensity: res.data.intensity
-              }
-              setPumpInfo(curPumpInfo);
+            setPumpStatus(res.data.status);
           }).catch(error => {
-            console.log(error.response.data);
+            console.log(error.response);
           });
         }).catch(error => {
-          console.log(error.response.data);
+          console.log(error.response);
         });
       }
       else {
         setTimeout(() => {
-          qlDoAmService.layThongSoDoAm(sensorID).then(res => {
-            setHumidity(res.data.moisture);
-            setTime(res.data.updatedAt)
-            setFlag(!flag);
+          if (!changeFarm) {
+
+            qlDoAmService.layThongSoDoAm(sensorID).then(res => {
+              setHumidity(res.data.moisture);
+              setTime(res.data.updatedAt)
+              setFlag(!flag);
+            }).catch(error => {
+              console.log(error.response);
+            });
+            qlDoAmService.layThongSoMayBom(pumpID).then(res => {
+              setPumpStatus(res.data.status);
+            }).catch(error => {
+              console.log(error.response.data);
+            });
+
+          }
+          else {
+            setChangeFarm(false);
+            qlDoAmService.layDanhSachSensor(thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id).then(res => {
+              setSensorID(res.data[0].id);
+              qlDoAmService.layThongSoDoAm(res.data[0].id).then(res => {
+                setHumidity(res.data.moisture);
+                setTime(res.data.updatedAt)
+                setFlag(!flag);
+              }).catch(error => {
+                console.log(error.response);
+              });
+            }).catch(error => {
+              console.log(error.response);
+            });
+            qlDoAmService.layDanhSachMayBom(thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id).then(res => {
+              setPumpID(res.data[0].id);
+              qlDoAmService.layThongSoMayBom(res.data[0].id).then(res => {
+                setPumpStatus(res.data.status);
+              }).catch(error => {
+                console.log(error.response);
+              });
+            }).catch(error => {
+              console.log(error.response);
+            });
+          }
+        }, 5000);
+      }
+
+    }
+    else {
+      if (thongTinUserFarm.listFarm.length === 0) {
+        if (taiKhoan.type === "admin") {
+          qlDoAmService.layDanhSachNongTrai().then(res => {
+            dispatch(setListFarms(res.data))
+            setFarms(res.data);
+          }).catch(error => {
+            console.log(error.response.data);
+          });
+        }
+        else {
+          qlNguoiDungService.layDanhSachNongTrai(taiKhoan.id).then(res => {
+            let temp = [];
+            res.data.map((userFarm, i) => {
+              temp = [...temp, userFarm.farm]
+            })
+            dispatch(setListFarms(temp))
+            setFarms(temp);
           }).catch(error => {
             console.log(error.response);
           });
-          qlDoAmService.layThongSoMayBom(pumpID).then(res => {
-            let curPumpInfo = {
-              status: res.data.status, 
-              intensity: res.data.intensity
-            }
-            setPumpInfo(curPumpInfo);
-        }).catch(error => {
-          console.log(error.response.data);
-        });
-        }, 5000);
+        }
       }
-      
-    }
-    else {
-      qlDoAmService.layDanhSachNongTrai().then(res => {
-        setFarms(res.data);
-      }).catch(error => {
-        console.log(error.response.data);
-      });
+      else {
+        setFarms(thongTinUserFarm.listFarm)
+      }
     }
   });
 
@@ -88,12 +129,19 @@ export default function Homepage() {
     setCurrentFarm(value);
   }
 
+  const handleChangeSelectFarm2 = (event) => {
+    let { value } = event.target;
+    dispatch(setCurrentFarmIndex(value));
+    setChangeFarm(true);
+  }
+
   const chooseFirstTime = () => {
-    setFirstAccess(false);
+    // console.log(object)
+    dispatch(setCurrentFarmIndex(currentFarm))
   }
 
   const renderContent = () => {
-    if (firstAccess) {
+    if (thongTinUserFarm.listFarm.length === 0 || thongTinUserFarm.currentFarmIndex === -1) {
       return (
         <div className="popupFarms">
           <h4>Vui lòng chọn nông trại: </h4>
@@ -107,7 +155,12 @@ export default function Homepage() {
               Lựa chọn nông trại
             </option>
             {farms.map((farm, i) => {
-              return <option key={i} value={i}>{farm.name}</option>;
+              if (farm.farmDevices.length != 0) {
+                return <option key={i} value={i}>{farm.name}</option>;
+              }
+              else {
+                return <option key={i} value={i} disabled>{farm.name}</option>;
+              }
             })}
           </select>
 
@@ -123,10 +176,15 @@ export default function Homepage() {
       return <div className="showContent">
         <div className="chose__farm">
           <p>Thay đổi nông trại: </p>
-          <select className="form-select" name="farm" aria-label="Default select" onChange={handleChangeSelectFarm}>
-            <option value={farms[currentFarm].name} defaultValue hidden>{farms[currentFarm].name}</option>
-            {farms.map((farm, i) => {
-              return <option key={i} value={i}>{farm.name}</option>
+          <select className="form-select" name="farm" aria-label="Default select" onChange={handleChangeSelectFarm2}>
+            <option value={thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id} defaultValue hidden>{thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].name}</option>
+            {thongTinUserFarm.listFarm.map((farm, i) => {
+              if (farm.farmDevices.length != 0) {
+                return <option key={i} value={i}>{farm.name}</option>;
+              }
+              else {
+                return <option key={i} value={i} disabled>{farm.name}</option>;
+              }
             })}
           </select>
         </div>
@@ -155,11 +213,9 @@ export default function Homepage() {
               Máy bơm
                         </div>
             <div className="detail">
-              {pumpInfo.status == "OFF" ? <div>Trạng thái: {pumpInfo.status}</div> : <div>
-                Trạng thái: {pumpInfo.status}
-                 - Cường độ: {pumpInfo.intensity}
-                </div>}
-              
+              <div>Trạng thái: {pumpStatus}</div>
+
+
             </div>
 
           </div>
