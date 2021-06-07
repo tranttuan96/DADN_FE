@@ -66,7 +66,7 @@ const UserLayout = (props) => {
                 <li className="nav-item">
                     <NavLink className="nav-link" to="/">
                         <img className="avatar" src={"images/avatar-login.jpg"}></img>
-                        {taiKhoan}
+                        {taiKhoan.username}
                     </NavLink>
                 </li>
                 <li className={`nav-item ${navActive.home ? 'isActive' : ''}`}>

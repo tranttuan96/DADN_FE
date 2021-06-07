@@ -10,6 +10,8 @@ import { AdminTemplate } from './templates/AdminTemplate/AdminTemplate';
 import HomeAdmin from './pages/Admin/HomeAdmin';
 import QuanLyNongTrai from './pages/Admin/QuanLyNongTrai';
 import QuanLyNongTraiChiTiet from './pages/Admin/QuanLyNongTraiChiTiet';
+import QuanLyNguoiDung from './pages/Admin/QuanLyNguoiDung';
+import QuanLyNguoiDungChiTiet from './pages/Admin/QuanLyNguoiDungChiTiet';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         <UserTemplate exact path='/lichsu' component={LichSu} />
         <AdminTemplate exact path='/admin' component={HomeAdmin} />
 				<AdminTemplate exact path='/admin/canhbaomayhu' component={HomeAdmin} />
+        <AdminTemplate exact path='/admin/quanlynguoidung' component={QuanLyNguoiDung} />
+        <AdminTemplate exact path='/admin/quanlynguoidung/:userID' component={QuanLyNguoiDungChiTiet} />
 				<AdminTemplate exact path='/admin/quanlynongtrai' component={QuanLyNongTrai} />
 				<AdminTemplate exact path='/admin/quanlynongtrai/:farmId' component={QuanLyNongTraiChiTiet} />
         <UserTemplate exact path='/' component={Homepage} />
