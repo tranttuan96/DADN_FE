@@ -27,6 +27,8 @@ export default function MayBom() {
     let [showTurnOn, setShowTurnOn] = useState(false);
     let [showTurnOff, setShowTurnOff] = useState(false);
 
+    const taiKhoan = JSON.parse(localStorage.getItem('userLogin'))
+
     useEffect(() => {
         setTimeout(() => {
             qlDoAmService.layThongSoDoAm(sensorID).then(res => {
@@ -82,7 +84,7 @@ export default function MayBom() {
             alert("Ngưỡng dưới không được cao hơn ngưỡng trên");
         }
         else{
-            axios.post(`http://localhost:8080/api/threshold/${sensorID}`, {
+            axios.post(`http://localhost:8080/api/${taiKhoan.id}/threshold/${sensorID}`, {
                 upper: `${upperThreshold}`,
                 lower: `${lowerThreshold}`
             }).then(res =>{
@@ -102,7 +104,7 @@ export default function MayBom() {
     }
 
     const handleTurnOn = () =>{
-        pumpControllService.pumpTurnOn(pumpID).then(response => {
+        pumpControllService.pumpTurnOn(taiKhoan.id,pumpID).then(response => {
             console.log(response);
         }).catch(error => {
             console.log(error);
@@ -111,7 +113,7 @@ export default function MayBom() {
     }
 
     const handleTurnOff = () =>{
-        pumpControllService.pumpTurnOff(pumpID).then(response => {
+        pumpControllService.pumpTurnOff(taiKhoan.id,pumpID).then(response => {
             console.log(response);
         }).catch(error => {
             console.log(error);
