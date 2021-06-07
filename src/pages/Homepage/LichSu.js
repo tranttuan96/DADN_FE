@@ -11,10 +11,11 @@ import {
 import '../../assets/scss/Layout/LichSu.scss'
 import { Row, Col, DatePicker, Space, Radio, Table, Button, icons } from 'antd'
 import { qlDoAmService } from "../../services/quanLyDoAmService"
+
 const { RangePicker } = DatePicker;
 
-
 export default class LichSu extends React.Component {
+
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -31,6 +32,7 @@ export default class LichSu extends React.Component {
 			threshold: []
 		};
 	}
+
 
 	componentDidMount = async () => {
 		if (this.state.firstAccess) {
@@ -124,7 +126,9 @@ export default class LichSu extends React.Component {
 		await this.setState({firstAccess: false});
 	}
 
+
 	render() {
+		const thongTinUserFarm = useSelector((state) => state.UserFarmReducer);
 		if (this.state.firstAccess) {
 			return (
 				<div className="popupFarms">
@@ -410,7 +414,7 @@ const columns_pump = [
 		title: 'Cường độ máy bơm',
 		dataIndex: 'intensity',
 		sorter: {
-			compare: (a, b) => a.moisture - b.moisture,
+			compare: (a, b) => a.intensity - b.intensity,
 			multiple: 1,
 		},
 	},
@@ -422,7 +426,19 @@ const columns_pump = [
 		title: 'Pump ID',
 		dataIndex: 'farm_pump_id',
 	},
+	{
+		title: 'User Name',
+		dataIndex: 'user_id_control',
+		render: user_id_control => {
+			if (user_id_control === "admin") {
+				return ""
+			}
+			else return user_id_control
+		}
+	},
+
 ];
+
 
 class PumpTable extends Component {
 
@@ -453,6 +469,10 @@ const columns_threshold = [
 	{
 		title: 'Ngưỡng trên',
 		dataIndex: 'upper',
+	},
+	{
+		title: 'User Name',
+		dataIndex: 'user_id_set_threshold',
 	},
 ];
 
