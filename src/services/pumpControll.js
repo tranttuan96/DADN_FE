@@ -15,16 +15,16 @@ export class pumpControll {
         })
     }
 
-    pumpTurnOn = (pumpID) => {
+    pumpTurnOn = (userID,pumpID) => {
         return axios({
-            url: `http://localhost:8080/pump/control/${pumpID}?state=ON`,
+            url: `http://localhost:8080/${userID}/pump/control/${pumpID}?state=ON`,
             method:'post',
         })
     }
 
-    pumpTurnOff = (pumpID) => {
+    pumpTurnOff = (userID,pumpID) => {
         return axios({
-            url: `http://localhost:8080/pump/control/${pumpID}?state=OFF`,
+            url: `http://localhost:8080/${userID}/pump/control/${pumpID}?state=OFF`,
             method:'post',
         })
     }
