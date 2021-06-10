@@ -27,12 +27,15 @@ export default function MayBom() {
     let [showTurnOn, setShowTurnOn] = useState(false);
     let [showTurnOff, setShowTurnOff] = useState(false);
 
+		let [flag, setFlag] = useState(true);
+
     const taiKhoan = JSON.parse(localStorage.getItem('userLogin'))
 
     useEffect(() => {
         setTimeout(() => {
             qlDoAmService.layThongSoDoAm(sensorID).then(res => {
                 setHumidity(res.data.moisture);
+								setFlag(!flag);
             }).catch(error => {
                 console.log(error.response);
             });
@@ -48,8 +51,8 @@ export default function MayBom() {
             }).catch(error => {
                 console.log(error.response);
             });
-            }, 3000);
-        }        
+            }, 5000);
+        },       
     );
 
     const handleCloseThreshold = () => setShowThreshold(false);
@@ -100,7 +103,7 @@ export default function MayBom() {
 
     const toggler = () =>{
         toggle ? setToggle(false) : setToggle(true);
-        render();
+        // render();
     }
 
     const handleTurnOn = () =>{
