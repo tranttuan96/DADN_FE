@@ -2,7 +2,8 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Route, NavLink, Redirect } from "react-router-dom";
 import './UserTemplate.scss'
 import ShowLogin from './ShowLogin'
-
+import { useDispatch } from 'react-redux'
+import { setEmptyState } from "../../redux/actions/UserFarmAction"
 import { Layout } from 'antd';
 const { Header, Content } = Layout;
 
@@ -10,7 +11,7 @@ const { Header, Content } = Layout;
 
 
 const UserLayout = (props) => {
-
+    const dispatch = useDispatch();
     const taiKhoan = JSON.parse(localStorage.getItem('userLogin'))
     let [navActive, setNavActive] = useState({
         home: true,
@@ -21,6 +22,8 @@ const UserLayout = (props) => {
 
     const dangXuat = () => {
         // console.log(taiKhoan)
+        // console.log("run logout")
+        dispatch(setEmptyState());
         localStorage.removeItem('userLogin')
         // dispatch(dangNhapAction(localStorage.getItem(userLogin)))
     }

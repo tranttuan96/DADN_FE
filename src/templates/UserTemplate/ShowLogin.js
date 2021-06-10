@@ -1,13 +1,16 @@
 import React from 'react'
 import { NavLink } from "react-router-dom";
-
+import { useDispatch } from 'react-redux'
+import { setEmptyState } from "../../redux/actions/UserFarmAction"
 import './ShowLogin.scss'
 
 export default function ShowLogin(props) {
 
     const taiKhoan = JSON.parse(localStorage.getItem('userLogin'))
-
+    const dispatch = useDispatch();
     const dangXuat = () => {
+        // console.log("run logout");
+        dispatch(setEmptyState());
         localStorage.removeItem('userLogin')
     }
 
