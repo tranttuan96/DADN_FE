@@ -128,7 +128,6 @@ export default class LichSu extends React.Component {
 
 
 	render() {
-		const thongTinUserFarm = useSelector((state) => state.UserFarmReducer);
 		if (this.state.firstAccess) {
 			return (
 				<div className="popupFarms">
