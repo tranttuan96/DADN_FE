@@ -4,6 +4,7 @@ import "../../assets/scss/Layout/homepage.scss"
 import { qlDoAmService } from "../../services/quanLyDoAmService"
 import { qlNguoiDungService } from "../../services/quanLyNguoiDungService"
 import { setListFarms, setCurrentFarmIndex } from "../../redux/actions/UserFarmAction"
+import JSOG from "jsog";
 
 export default function Homepage() {
 
@@ -99,16 +100,18 @@ export default function Homepage() {
       if (thongTinUserFarm.listFarm.length === 0) {
         if (taiKhoan.type === "admin") {
           qlDoAmService.layDanhSachNongTrai().then(res => {
-            dispatch(setListFarms(res.data))
-            setFarms(res.data);
+            console.log(JSOG.decode(res.data))
+            dispatch(setListFarms(JSOG.decode(res.data)))
+            setFarms(JSOG.decode(res.data));
           }).catch(error => {
-            console.log(error.response.data);
+            console.log(error.response);
           });
         }
         else {
           qlNguoiDungService.layDanhSachNongTrai(taiKhoan.id).then(res => {
             let temp = [];
-            res.data.map((userFarm, i) => {
+            let listFarmTemp = JSOG.decode(res.data);
+            listFarmTemp.map((userFarm, i) => {
               temp = [...temp, userFarm.farm]
             })
             dispatch(setListFarms(temp))
@@ -155,11 +158,21 @@ export default function Homepage() {
               Lựa chọn nông trại
             </option>
             {farms.map((farm, i) => {
-              if (farm.farmDevices.length != 0) {
-                return <option key={i} value={i}>{farm.name}</option>;
+              if(farm.farmDevices.length !== 0) {
+                console.log(farm.farmDevices[farm.farmDevices.length - 2])
+                console.log(farm.farmDevices[farm.farmDevices.length - 2].endDate !== "")
+              }
+              if(farm.active !== 1) {
+                return <option key={i} value={i} disabled>{farm.name} - Nông trại ngừng hoạt động</option>;
+              }
+              else if (farm.farmDevices.length === 0) {
+                return <option key={i} value={i} disabled>{farm.name} - Nông trại không có thiết bị</option>;
+              }
+              else if(farm.farmDevices[farm.farmDevices.length - 2].endDate !== null) {
+                return <option key={i} value={i} disabled>{farm.name} - Nông trại không có thiết bị</option>;
               }
               else {
-                return <option key={i} value={i} disabled>{farm.name}</option>;
+                return <option key={i} value={i}>{farm.name}</option>;
               }
             })}
           </select>
@@ -179,11 +192,17 @@ export default function Homepage() {
           <select className="form-select" name="farm" aria-label="Default select" onChange={handleChangeSelectFarm2}>
             <option value={thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id} defaultValue hidden>{thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].name}</option>
             {thongTinUserFarm.listFarm.map((farm, i) => {
-              if (farm.farmDevices.length != 0) {
-                return <option key={i} value={i}>{farm.name}</option>;
+              if(farm.active !== 1) {
+                return <option key={i} value={i} disabled>{farm.name} - Nông trại ngừng hoạt động</option>;
+              }
+              else if (farm.farmDevices.length === 0) {
+                return <option key={i} value={i} disabled>{farm.name} - Nông trại không có thiết bị</option>;
+              }
+              else if(farm.farmDevices[farm.farmDevices.length - 2].endDate !== null) {
+                return <option key={i} value={i} disabled>{farm.name} - Nông trại không có thiết bị</option>;
               }
               else {
-                return <option key={i} value={i} disabled>{farm.name}</option>;
+                return <option key={i} value={i}>{farm.name}</option>;
               }
             })}
           </select>
