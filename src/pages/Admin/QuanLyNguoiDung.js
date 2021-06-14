@@ -3,6 +3,7 @@ import "../../assets/scss/Layout/quanlynguoidung.scss"
 import { qlNguoiDungService } from "../../services/quanLyNguoiDungService"
 import { Modal, Button } from 'react-bootstrap';
 import { Route, NavLink, Redirect } from "react-router-dom";
+import swal from 'sweetalert';
 
 export default function QuanLyNguoiDung() {
 
@@ -61,11 +62,24 @@ export default function QuanLyNguoiDung() {
         console.log(values)
         qlNguoiDungService.themNguoiDung(values).then(res => {
             closeModal();
-            qlNguoiDungService.layDanhSachNguoiDung().then(res => {
-                setListUser(res.data);
-            }).catch(error => {
-                console.log(error.response);
-            });
+            console.log(res.data === "")
+            if(res.data === "") {
+                swal("Thất bại.", "Tên tài khoản đã tồn tại", "error", {
+                    buttons: false,
+                    timer: 1500,
+                });
+            }
+            else {
+                swal("Thành công.", "Thêm tài khoản thành công", "success", {
+                    buttons: false,
+                    timer: 1500,
+                });
+                qlNguoiDungService.layDanhSachNguoiDung().then(res => {
+                    setListUser(res.data);
+                }).catch(error => {
+                    console.log(error.response);
+                });
+            }
         }).catch(error => {
             console.log(error.response);
         });
@@ -123,7 +137,7 @@ export default function QuanLyNguoiDung() {
                                         <input type="text" name="password" className="form-control" id="password" required onChange={handleChange} />
                                         {/* <div>{newUser.errors.password}</div> */}
                                     </div>
-                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                    <button type="submit" className="btn btn-primary">Thêm</button>
                                 </form>
                     </Modal.Body>
                 </Modal>

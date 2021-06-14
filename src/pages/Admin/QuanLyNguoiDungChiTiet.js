@@ -3,6 +3,7 @@ import "../../assets/scss/Layout/quanlynguoidung.scss"
 import { qlNguoiDungService } from "../../services/quanLyNguoiDungService"
 import { qlNongTraiService } from "../../services/quanLyNongTraiService"
 import { Modal, Button } from 'react-bootstrap';
+import swal from 'sweetalert';
 
 export default function QuanLyNguoiDungChiTiet(props) {
 
@@ -36,6 +37,10 @@ export default function QuanLyNguoiDungChiTiet(props) {
 
     const xoaNongTrai = (userFarmID) => {
         qlNguoiDungService.xoaNongTraiNguoiDung(userFarmID).then(res => {
+            swal("Thành công.", "Xóa nông trại cho tài khoản thành công", "success", {
+                buttons: false,
+                timer: 1500,
+            });
             qlNguoiDungService.layDanhSachNongTrai(props.match.params.userID).then(res => {
                 setListUserFarm(res.data);
             }).catch(error => {
@@ -74,6 +79,10 @@ export default function QuanLyNguoiDungChiTiet(props) {
             console.log(res.data)
             qlNguoiDungService.layDanhSachNongTrai(props.match.params.userID).then(res => {
                 closeModal();
+                swal("Thành công.", "Thêm nông trại cho tài khoản thành công", "success", {
+                    buttons: false,
+                    timer: 1500,
+                });
                 setListUserFarm(res.data);
             }).catch(error => {
                 console.log(error.response);
@@ -147,7 +156,7 @@ export default function QuanLyNguoiDungChiTiet(props) {
                         })}
                     </select>
                     <div>{chooseFarmError}</div>
-                    <button type="submit" className="btn btn-primary" onClick={addFarmOnClick}>Submit</button>
+                    <button type="submit" className="btn btn-primary" onClick={addFarmOnClick}>Thêm</button>
                 </Modal.Body>
             </Modal>
         </div>
