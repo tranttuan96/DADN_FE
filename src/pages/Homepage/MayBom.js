@@ -11,8 +11,8 @@ import axios from "axios"
 export default function MayBom() {
 
     //let [currentFarm, setCurrentFarm] = useState("");
-    let [sensorID, setSensorID] = useState(9);
-    let [pumpID, setPumpID] = useState(11);
+    let [sensorID, setSensorID] = useState();
+    let [pumpID, setPumpID] = useState();
 
     let [pumpstatus,setPumpStatus] = useState()
     //let [intensity,setIntensity] = useState();
@@ -33,6 +33,8 @@ export default function MayBom() {
 
     useEffect(() => {
         setTimeout(() => {
+            setSensorID(JSON.parse(localStorage.getItem('presentSensorId')));
+            setPumpID(JSON.parse(localStorage.getItem('presentPumpId')));
             qlDoAmService.layThongSoDoAm(sensorID).then(res => {
                 setHumidity(res.data.moisture);
 								setFlag(!flag);

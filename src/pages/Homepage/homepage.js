@@ -5,6 +5,7 @@ import { qlDoAmService } from "../../services/quanLyDoAmService"
 import { qlNguoiDungService } from "../../services/quanLyNguoiDungService"
 import { setListFarms, setCurrentFarmIndex } from "../../redux/actions/UserFarmAction"
 import JSOG from "jsog";
+import {presentSensorId,presentPumpId} from '../../setting/config'
 
 export default function Homepage() {
 
@@ -28,6 +29,7 @@ export default function Homepage() {
       if (sensorID === "") {
         qlDoAmService.layDanhSachSensor(thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id).then(res => {
           setSensorID(res.data[0].id);
+          localStorage.setItem(presentSensorId, JSON.stringify(res.data[0].id));
           qlDoAmService.layThongSoDoAm(res.data[0].id).then(res => {
             setHumidity(res.data.moisture);
             setTime(res.data.updatedAt)
@@ -40,6 +42,7 @@ export default function Homepage() {
         });
         qlDoAmService.layDanhSachMayBom(thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id).then(res => {
           setPumpID(res.data[0].id);
+          localStorage.setItem(presentPumpId, JSON.stringify(res.data[0].id));
           qlDoAmService.layThongSoMayBom(res.data[0].id).then(res => {
             setPumpStatus(res.data.status);
           }).catch(error => {
@@ -71,6 +74,7 @@ export default function Homepage() {
             setChangeFarm(false);
             qlDoAmService.layDanhSachSensor(thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id).then(res => {
               setSensorID(res.data[0].id);
+              localStorage.setItem(presentSensorId, JSON.stringify(res.data[0].id));
               qlDoAmService.layThongSoDoAm(res.data[0].id).then(res => {
                 setHumidity(res.data.moisture);
                 setTime(res.data.updatedAt)
@@ -83,6 +87,7 @@ export default function Homepage() {
             });
             qlDoAmService.layDanhSachMayBom(thongTinUserFarm.listFarm[thongTinUserFarm.currentFarmIndex].id).then(res => {
               setPumpID(res.data[0].id);
+              localStorage.setItem(presentPumpId, JSON.stringify(res.data[0].id));
               qlDoAmService.layThongSoMayBom(res.data[0].id).then(res => {
                 setPumpStatus(res.data.status);
               }).catch(error => {
