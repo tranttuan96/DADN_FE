@@ -53,7 +53,7 @@ export default function MayBom() {
             }).catch(error => {
                 console.log(error.response);
             });
-            }, 5000);
+            }, 2000);
         },       
     );
 
@@ -85,7 +85,13 @@ export default function MayBom() {
 
     const saveThreshold = (event) => {
         event.preventDefault();
-        if(`${upperThreshold}` < `${lowerThreshold}`){
+        if (isNaN(`${upperThreshold}`) || isNaN(`${lowerThreshold}`)){
+            alert("Dữ liệu không đúng yêu cầu");
+        }
+        else if (Number.isInteger(`${upperThreshold}`) || Number.isInteger(`${lowerThreshold}`)){
+            alert("Dữ liệu không đúng yêu cầu");
+        }
+        else if(`${upperThreshold}` < `${lowerThreshold}`){
             alert("Ngưỡng dưới không được cao hơn ngưỡng trên");
         }
         else{
