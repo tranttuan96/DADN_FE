@@ -5,6 +5,7 @@ import { qlDoAmService } from "../../services/quanLyDoAmService"
 import { qlNguoiDungService } from "../../services/quanLyNguoiDungService"
 import { setListFarms, setCurrentFarmIndex } from "../../redux/actions/UserFarmAction"
 import JSOG from "jsog";
+import swal from 'sweetalert';
 
 export default function Homepage() {
 
@@ -140,7 +141,16 @@ export default function Homepage() {
 
   const chooseFirstTime = () => {
     // console.log(object)
-    dispatch(setCurrentFarmIndex(currentFarm))
+    if (currentFarm === undefined) {
+      swal("", "Vui lòng chọn nông trại.", "error", {
+        buttons: false,
+        timer: 2000,
+    });
+    }
+    else {
+      dispatch(setCurrentFarmIndex(currentFarm))
+    }
+    
   }
 
   const renderContent = () => {

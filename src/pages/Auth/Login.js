@@ -7,16 +7,6 @@ import swal from 'sweetalert';
 export default function Login(props) {
 
 
-    let accounts = [{
-        taiKhoan: "user",
-        matKhau: "user123",
-        loaiNguoiDung: "user"
-    }, {
-        taiKhoan: "admin",
-        matKhau: "admin123",
-        loaiNguoiDung: "admin"
-    }]
-
     let [state, setState] = useState({
         values: {
             username: '',
