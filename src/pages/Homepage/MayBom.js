@@ -11,8 +11,8 @@ import axios from "axios"
 export default function MayBom() {
 
     //let [currentFarm, setCurrentFarm] = useState("");
-    let [sensorID, setSensorID] = useState(9);
-    let [pumpID, setPumpID] = useState(11);
+    let [sensorID, setSensorID] = useState();
+    let [pumpID, setPumpID] = useState();
 
     let [pumpstatus,setPumpStatus] = useState()
     //let [intensity,setIntensity] = useState();
@@ -33,6 +33,8 @@ export default function MayBom() {
 
     useEffect(() => {
         setTimeout(() => {
+            setSensorID(JSON.parse(localStorage.getItem('presentSensorId')));
+            setPumpID(JSON.parse(localStorage.getItem('presentPumpId')));
             qlDoAmService.layThongSoDoAm(sensorID).then(res => {
                 setHumidity(res.data.moisture);
 								setFlag(!flag);
@@ -51,7 +53,7 @@ export default function MayBom() {
             }).catch(error => {
                 console.log(error.response);
             });
-            }, 5000);
+            }, 2000);
         },       
     );
 
@@ -83,7 +85,13 @@ export default function MayBom() {
 
     const saveThreshold = (event) => {
         event.preventDefault();
-        if(`${upperThreshold}` < `${lowerThreshold}`){
+        if (isNaN(`${upperThreshold}`) || isNaN(`${lowerThreshold}`)){
+            alert("Dữ liệu không đúng yêu cầu");
+        }
+        else if (Number.isInteger(`${upperThreshold}`) || Number.isInteger(`${lowerThreshold}`)){
+            alert("Dữ liệu không đúng yêu cầu");
+        }
+        else if(`${upperThreshold}` < `${lowerThreshold}`){
             alert("Ngưỡng dưới không được cao hơn ngưỡng trên");
         }
         else{
