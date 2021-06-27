@@ -226,7 +226,7 @@ export default class MyComponent extends React.Component {
           {/* Add or update modal */}
           <Modal
             show={this.state.showModalAdd}
-            onHide={() => this.setState({ ...this.state, showModalAdd: false })}
+            onHide={() => this.setState({ ...this.state, showModalAdd: false, form: {} })}
           >
             <Modal.Header closeButton>
               <Modal.Title>Thêm hoặc cập nhật nông trại</Modal.Title>
@@ -248,13 +248,14 @@ export default class MyComponent extends React.Component {
                     );
                   }
 
-                  this.setState({ ...this.state, showModalAdd: false });
+                  this.setState({ ...this.state, showModalAdd: false, form: {} });
                 }}
               >
                 <Form.Group controlId="farmName" className="my-3">
                   <Form.Label>Tên</Form.Label>
                   <Form.Control
                     type="text"
+										defaultValue={this.state.form.name}
                     onChange={(e) => {
                       e.preventDefault();
                       console.log(e.target.value);
@@ -270,6 +271,7 @@ export default class MyComponent extends React.Component {
                   <Form.Label>Vị trí địa lý</Form.Label>
                   <Form.Control
                     type="text"
+										defaultValue={this.state.form.location}
                     onChange={(e) => {
                       e.preventDefault();
                       console.log(e.target.value);
@@ -288,7 +290,7 @@ export default class MyComponent extends React.Component {
             <Modal.Footer>
               <Button
                 onClick={() =>
-                  this.setState({ ...this.state, showModalAdd: false })
+                  this.setState({ ...this.state, showModalAdd: false, form: {} })
                 }
               >
                 Huỷ
@@ -300,7 +302,7 @@ export default class MyComponent extends React.Component {
           <Modal
             show={this.state.showModalDelete}
             onHide={() =>
-              this.setState({ ...this.state, showModalDelete: false })
+              this.setState({ ...this.state, showModalDelete: false, form: {} })
             }
           >
             <Modal.Header closeButton>
@@ -315,7 +317,7 @@ export default class MyComponent extends React.Component {
                     "http://localhost:8080/api/farms/" + this.state.form.id
                   );
 
-                  this.setState({ ...this.state, showModalDelete: false });
+                  this.setState({ ...this.state, showModalDelete: false, form: {} });
                 }}
               >
                 Chắc chắn
@@ -323,7 +325,7 @@ export default class MyComponent extends React.Component {
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  this.setState({ ...this.state, showModalDelete: false });
+                  this.setState({ ...this.state, showModalDelete: false, form: {} });
                 }}
               >
                 Không
@@ -360,6 +362,8 @@ export default class MyComponent extends React.Component {
                           form: {
                             ...this.state.form,
                             id: farm.id,
+														name: farm.name,
+														location: farm.location,
                           },
                         });
                       }}
@@ -420,6 +424,8 @@ export default class MyComponent extends React.Component {
                           form: {
                             ...this.state.form,
                             id: farm.id,
+														name: farm.name,
+														location: farm.location,
                           },
                         });
                       }}

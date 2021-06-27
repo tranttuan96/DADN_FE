@@ -275,7 +275,7 @@ export default class MyComponent extends React.Component {
           {/* modalAdd */}
           <Modal
             show={this.state.showModalAdd}
-            onHide={() => this.setState({ ...this.state, showModalAdd: false })}
+            onHide={() => this.setState({ ...this.state, showModalAdd: false, formMoistureSensor: {}, formPump: {} })}
           >
             <Modal.Header closeButton>
               <Modal.Title>Thêm thiết bị</Modal.Title>
@@ -301,7 +301,7 @@ export default class MyComponent extends React.Component {
                     );
                   }
 
-                  this.setState({ ...this.state, showModalAdd: false });
+                  this.setState({ ...this.state, showModalAdd: false, formMoistureSensor: {}, formPump: {} });
                 }}
               >
                 <Form.Group controlId="deviceId1" className="my-3">
@@ -389,7 +389,7 @@ export default class MyComponent extends React.Component {
             <Modal.Footer>
               <Button
                 onClick={() =>
-                  this.setState({ ...this.state, showModalAdd: false })
+                  this.setState({ ...this.state, showModalAdd: false, formMoistureSensor: {}, formPump: {} })
                 }
               >
                 Huỷ
@@ -401,7 +401,7 @@ export default class MyComponent extends React.Component {
           <Modal
             show={this.state.showModalUpdate}
             onHide={() =>
-              this.setState({ ...this.state, showModalUpdate: false })
+              this.setState({ ...this.state, showModalUpdate: false, formMoistureSensor: {}, formPump: {} })
             }
           >
             <Modal.Header closeButton>
@@ -429,34 +429,15 @@ export default class MyComponent extends React.Component {
                     );
                   }
 
-                  this.setState({ ...this.state, showModalUpdate: false });
+                  this.setState({ ...this.state, showModalUpdate: false, formMoistureSensor: {}, formPump: {} });
                 }}
               >
                 <Form.Group controlId="deviceId2" className="my-3">
                   <Form.Label>ID thiết bị</Form.Label>
                   <Form.Control
                     type="text"
-                    onChange={(e) => {
-                      e.preventDefault();
-                      console.log(e.target.value);
-                      if (this.state.deviceType == "moistureSensor") {
-                        this.setState({
-                          ...this.state,
-                          formMoistureSensor: {
-                            ...this.state.formMoistureSensor,
-                            id: e.target.value,
-                          },
-                        });
-                      } else if (this.state.deviceType == "pump") {
-                        this.setState({
-                          ...this.state,
-                          formPump: {
-                            ...this.state.formPump,
-                            id: e.target.value,
-                          },
-                        });
-                      }
-                    }}
+										disabled
+										defaultValue={this.state.deviceType == "moistureSensor" ? this.state.formMoistureSensor.id : this.state.formPump.id}
                   />
                 </Form.Group>
 
@@ -464,6 +445,7 @@ export default class MyComponent extends React.Component {
                   <Form.Label>Tên</Form.Label>
                   <Form.Control
                     type="text"
+										defaultValue={this.state.deviceType == "moistureSensor" ? this.state.formMoistureSensor.name : this.state.formPump.name}
                     onChange={(e) => {
                       e.preventDefault();
                       console.log(e.target.value);
@@ -511,7 +493,7 @@ export default class MyComponent extends React.Component {
             <Modal.Footer>
               <Button
                 onClick={() =>
-                  this.setState({ ...this.state, showModalUpdate: false })
+                  this.setState({ ...this.state, showModalUpdate: false, formMoistureSensor: {}, formPump: {} })
                 }
               >
                 Huỷ
@@ -523,7 +505,7 @@ export default class MyComponent extends React.Component {
           <Modal
             show={this.state.showModalDelete}
             onHide={() =>
-              this.setState({ ...this.state, showModalDelete: false })
+              this.setState({ ...this.state, showModalDelete: false, formMoistureSensor: {}, formPump: {} })
             }
           >
             <Modal.Header closeButton>
@@ -550,7 +532,7 @@ export default class MyComponent extends React.Component {
                     );
                   }
 
-                  this.setState({ ...this.state, showModalDelete: false });
+                  this.setState({ ...this.state, showModalDelete: false, formMoistureSensor: {}, formPump: {} });
                 }}
               >
                 Chắc chắn
@@ -558,7 +540,7 @@ export default class MyComponent extends React.Component {
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  this.setState({ ...this.state, showModalDelete: false });
+                  this.setState({ ...this.state, showModalDelete: false, formMoistureSensor: {}, formPump: {} });
                 }}
               >
                 Không
@@ -592,6 +574,7 @@ export default class MyComponent extends React.Component {
                           formMoistureSensor: {
                             ...this.state.formMoistureSensor,
                             id: moistureSensor.id,
+														name: moistureSensor.name,
                           },
                           deviceType: "moistureSensor",
                         });
@@ -663,6 +646,7 @@ export default class MyComponent extends React.Component {
                           formPump: {
                             ...this.state.formPump,
                             id: pump.id,
+														name: pump.name,
                           },
                           deviceType: "pump",
                         });
